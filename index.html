@@ -1,0 +1,30 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>TrueRoute Driver Check-In</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>TrueRoute Driver Check-In</h1>
+    <form id="checkinForm">
+      <label for="driverName">Driver Name:</label>
+      <input type="text" id="driverName" name="driverName" required>
+
+      <label for="fitToDrive">
+        <input type="checkbox" id="fitToDrive" name="fitToDrive">
+        I confirm I am fit to drive today
+      </label>
+
+      <button type="submit">Submit Check-In</button>
+    </form>
+    <p id="message"></p>
+    <footer>Powered by TrueRoute • Thomas Hill Travel</footer>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
+    
