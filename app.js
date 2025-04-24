@@ -14,6 +14,15 @@ document.getElementById("checkinForm").addEventListener("submit", function(event
     return;
   }
 
+  const licence = document.getElementById("licenceUpload").files.length;
+  const cpc = document.getElementById("cpcUpload").files.length;
+  const digi = document.getElementById("digiUpload").files.length;
+
+  if (!licence || !cpc || !digi) {
+    message.textContent = "Please upload all required documents.";
+    return;
+  }
+
   message.textContent = `Check-in complete. Welcome, ${name}.`;
 });
     
