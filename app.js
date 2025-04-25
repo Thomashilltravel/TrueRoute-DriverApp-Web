@@ -1,10 +1,15 @@
 const featureTemplates = {
+    walkaround: "DVSA Walkaround Check",
+    payslips: "Payslip Viewer",
+    messages: "Messaging Portal",
     satnav: "SatNav (Vehicle-Aware)",
     passengerCode: "Passenger Code Generator",
     parcelCode: "Parcel Code Generator",
     podUpload: "Proof of Delivery Upload",
-    compliance: "Compliance Failsafe Center"
+    compliance: "Compliance Failsafe Center",
+    profile: "My Profile" // ✅ ADD THIS
   };
+  
   
   let session = {
     name: '',
@@ -89,6 +94,7 @@ const featureTemplates = {
           case "parcelCode": loadParcelCode(); break;
           case "podUpload": loadPODUpload(); break;
           case "compliance": loadComplianceCenter(); break;
+          case "profile": loadDriverProfile(); break;
           default:
             output.innerHTML = `<strong>[${featureTemplates[feature]}]</strong> loaded in <strong>${session.mode.toUpperCase()}</strong> mode.`;
         }
@@ -426,5 +432,19 @@ window.onload = function() {
     `;
   }
   // 🚨 End of the Incident Report System
+
+  function loadDriverProfile() {
+    document.getElementById("featureSection").innerHTML = `
+      <h2>Driver Profile</h2>
+      <ul style="font-size:18px;">
+        <li><strong>Name:</strong> ${session.name}</li>
+        <li><strong>Email:</strong> ${session.email}</li>
+        <li><strong>Licence Number:</strong> ${session.licence}</li>
+        <li><strong>Driving Mode:</strong> ${session.mode.toUpperCase()}</li>
+      </ul>
+      <p><em>Your profile was created based on your login details.</em></p>
+    `;
+  }
+  
 
   
