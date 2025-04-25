@@ -1,7 +1,4 @@
 const featureTemplates = {
-    walkaround: "DVSA Walkaround Check",
-    payslips: "Payslip Viewer",
-    messages: "Messaging Portal",
     satnav: "SatNav (Vehicle-Aware)",
     passengerCode: "Passenger Code Generator",
     parcelCode: "Parcel Code Generator",
@@ -16,6 +13,15 @@ const featureTemplates = {
     mode: '',
     uploadsComplete: false
   };
+  
+  // ✅ This must be OUTSIDE the session block!
+  const companyInfo = {
+    companyName: "Thomas Hill Travel",
+    contactNumber: "+44 1234 567890",
+    insuranceProvider: "Elite Motor Insurers",
+    insurancePolicy: "TH-INS-2025-001"
+  };
+  
   
   function submitLogin() {
     const name = document.getElementById("driverName").value.trim();
