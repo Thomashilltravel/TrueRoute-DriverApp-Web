@@ -3,61 +3,34 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>TrueRoute Driver App – Enhanced DVSA</title>
+  <title>TrueRoute DVSA 2.0</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="app-container" id="mainApp">
-    <h1>TrueRoute – Enhanced PSV Walkaround</h1>
+    <h1>TrueRoute – DVSA Walkaround 2.0</h1>
     <form id="dvsaForm">
       <label>Driver Name:</label>
       <input type="text" id="driverName" required>
-
       <label>Vehicle Registration:</label>
       <input type="text" id="vehicleReg" required>
-
       <label>Date:</label>
       <input type="date" id="checkDate" required>
-
       <label>Odometer Reading (miles):</label>
       <input type="number" id="odometer" required>
 
       <h2>Checklist</h2>
-      <div class="checklist">
-        <label><input type="checkbox"> Access Equipment - Step/handrails secure and functioning</label>
-        <label><input type="checkbox"> AdBlue - Level sufficient and system not leaking</label>
-        <label><input type="checkbox"> Air Build-Up - System pressurizes correctly with no audible leaks</label>
-        <label><input type="checkbox"> Battery - Securely mounted, terminals clean, no corrosion</label>
-        <label><input type="checkbox"> Bodywork - No sharp edges or loose panels</label>
-        <label><input type="checkbox"> Brakes - Including service brake and handbrake</label>
-        <label><input type="checkbox"> Cleanliness - Interior and exterior, mirrors/windows</label>
-        <label><input type="checkbox"> Coupling (if trailer attached) - Secure, no damage</label>
-        <label><input type="checkbox"> Dashboard Warning Lights - Function and extinguish as expected</label>
-        <label><input type="checkbox"> Doors - Open/close properly and are secure</label>
-        <label><input type="checkbox"> Driver's Seat - Secure and adjusted properly</label>
-        <label><input type="checkbox"> Emergency Exits - Marked, functional, and unobstructed</label>
-        <label><input type="checkbox"> Exhaust System - No excessive smoke or leaks</label>
-        <label><input type="checkbox"> Fire Extinguishers - Present, charged, and in date</label>
-        <label><input type="checkbox"> First Aid Kit - Present and contents complete/in date</label>
-        <label><input type="checkbox"> Flooring - Secure, not damaged or slippery</label>
-        <label><input type="checkbox"> Fuel Level - Adequate for journey, cap secure</label>
-        <label><input type="checkbox"> Horn - Operational</label>
-        <label><input type="checkbox"> Lights - Headlights, indicators, brake lights, reverse, fog</label>
-        <label><input type="checkbox"> Load Security - If applicable, safe and secure</label>
-        <label><input type="checkbox"> Mirrors - Clean, secure, and adjusted</label>
-        <label><input type="checkbox"> Number Plates - Present, secure, clean and legible</label>
-        <label><input type="checkbox"> Oil Level - Within correct range</label>
-        <label><input type="checkbox"> Seatbelts - Where fitted, functional and undamaged</label>
-        <label><input type="checkbox"> Seats - Fixed properly and clean</label>
-      </div>
+      <div class="checklist" id="checklistSection"></div>
 
-      <h2>Signature</h2>
+      <label><input type="checkbox" id="fitToDrive" required> I confirm I am fit to drive</label>
+
+      <h3>Signature</h3>
       <canvas id="signature" width="300" height="100" style="border:1px solid #ccc;"></canvas>
       <br>
       <button type="button" onclick="clearSignature()">Clear Signature</button>
 
-      <br><br>
+      <p class="disclaimer">⚠️ If any item is marked as Fail, seek advice before continuing your journey.</p>
       <button type="submit">Submit Walkaround Check</button>
     </form>
     <footer>Powered by TrueRoute | Developed by Thomas Hill Travel</footer>

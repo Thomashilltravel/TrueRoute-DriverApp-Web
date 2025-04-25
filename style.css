@@ -13,14 +13,14 @@ body {
   border-radius: 12px;
   box-shadow: 0 0 8px rgba(0,0,0,0.1);
 }
-h1, h2 {
+h1, h2, h3 {
   text-align: center;
 }
 label {
   display: block;
   margin-top: 10px;
 }
-input[type="text"], input[type="number"], input[type="date"] {
+input[type="text"], input[type="number"], input[type="date"], input[type="file"] {
   width: 100%;
   padding: 10px;
   margin-top: 5px;
@@ -36,8 +36,20 @@ button {
   border: none;
   border-radius: 6px;
 }
-.checklist label {
-  margin-bottom: 5px;
+.checklist-group {
+  margin-bottom: 15px;
+}
+.checklist-group label {
+  display: block;
+  font-weight: bold;
+}
+.check-options {
+  display: flex;
+  gap: 10px;
+  margin-top: 5px;
+}
+.check-options label {
+  font-weight: normal;
 }
 footer {
   margin-top: 30px;
@@ -48,5 +60,10 @@ footer {
 canvas {
   display: block;
   margin-top: 10px;
+}
+.disclaimer {
+  color: #b00;
+  font-weight: bold;
+  margin-top: 20px;
 }
     
