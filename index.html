@@ -3,36 +3,27 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>TrueRoute Driver Check-In</title>
+  <title>TrueRoute Driver App</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="container">
-    <h1>TrueRoute Driver Check-In</h1>
-    <form id="checkinForm">
-      <label for="driverName">Driver Name:</label>
-      <input type="text" id="driverName" name="driverName" required>
+  <div class="app-container">
+    <h1>TrueRoute Driver App</h1>
 
-      <label for="fitToDrive">
-        <input type="checkbox" id="fitToDrive" name="fitToDrive">
-        I confirm I am fit to drive today
-      </label>
+    <label for="modeSelect">Select Mode:</label>
+    <select id="modeSelect" onchange="updateMenu()">
+      <option value="psv">PSV</option>
+      <option value="hgv">HGV</option>
+      <option value="dual">Dual</option>
+    </select>
 
-      <label for="licenceUpload">Upload Driving Licence:</label>
-      <input type="file" id="licenceUpload">
+    <div id="menu" class="menu"></div>
 
-      <label for="cpcUpload">Upload CPC Card:</label>
-      <input type="file" id="cpcUpload">
-
-      <label for="digiUpload">Upload Digi Card:</label>
-      <input type="file" id="digiUpload">
-
-      <button type="submit">Submit Check-In</button>
-    </form>
-    <p id="message"></p>
-    <footer>Powered by TrueRoute • Thomas Hill Travel</footer>
+    <div id="output" class="output"></div>
+    <footer>TrueRoute – Developed by Thomas Hill Travel</footer>
   </div>
+
   <script src="app.js"></script>
 </body>
 </html>
