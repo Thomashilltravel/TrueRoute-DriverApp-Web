@@ -1,1 +1,36 @@
-body { font-family: Arial; background: #f9f9f9; }
+
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f4f4;
+  padding: 10px;
+  color: #222;
+}
+.app-container {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 0 8px rgba(0,0,0,0.1);
+}
+input, select, button {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  font-size: 16px;
+}
+.menu button {
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+.output {
+  margin-top: 20px;
+}
+canvas {
+  margin-top: 10px;
+}
+.disclaimer {
+  color: #c00;
+  font-weight: bold;
+}
