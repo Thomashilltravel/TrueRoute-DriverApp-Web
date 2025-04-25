@@ -71,7 +71,7 @@ const featureTemplates = {
     menu.innerHTML = "";
     output.innerHTML = "";
   
-    const always = ["walkaround", "payslips", "messages", "satnav", "compliance"];
+    const always = ["walkaround", "payslips", "messages", "satnav", "compliance", "profile"];
     const psvOnly = ["passengerCode"];
     const hgvOnly = ["parcelCode", "podUpload"];
     const dualOnly = ["passengerCode", "parcelCode", "podUpload"];
