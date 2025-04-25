@@ -3,49 +3,64 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>TrueRoute Driver App</title>
+  <title>TrueRoute Driver App – Enhanced DVSA</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="app-container" id="loginScreen">
-    <h1>Driver Login</h1>
-    <input type="text" id="driverName" placeholder="Full Name" required>
-    <input type="email" id="driverEmail" placeholder="Email Address" required>
-    <input type="text" id="driverLicence" placeholder="Licence Number" required>
-    <label for="modeSelect">Select Mode:</label>
-    <select id="modeSelect">
-      <option value="psv">PSV</option>
-      <option value="hgv">HGV</option>
-      <option value="dual">Dual</option>
-    </select>
-    <button onclick="submitLogin()">Login</button>
-  </div>
+  <div class="app-container" id="mainApp">
+    <h1>TrueRoute – Enhanced PSV Walkaround</h1>
+    <form id="dvsaForm">
+      <label>Driver Name:</label>
+      <input type="text" id="driverName" required>
 
-  <div class="app-container" id="uploadScreen" style="display:none;">
-    <h2>Upload Your Documents</h2>
-    <label>Driving Licence - Front:</label>
-    <input type="file" accept="image/*,.pdf" id="licenceFront">
-    <label>Driving Licence - Back:</label>
-    <input type="file" accept="image/*,.pdf" id="licenceBack">
-    <label>CPC Card - Front:</label>
-    <input type="file" accept="image/*,.pdf" id="cpcFront">
-    <label>CPC Card - Back:</label>
-    <input type="file" accept="image/*,.pdf" id="cpcBack">
-    <label>Digi Card - Front:</label>
-    <input type="file" accept="image/*,.pdf" id="digiFront">
-    <label>Digi Card - Back:</label>
-    <input type="file" accept="image/*,.pdf" id="digiBack">
-    <label>Take a Selfie:</label>
-    <input type="file" accept="image/*" capture="user" id="selfieUpload">
-    <button onclick="submitUploads()">Submit Documents</button>
-  </div>
+      <label>Vehicle Registration:</label>
+      <input type="text" id="vehicleReg" required>
 
-  <div class="app-container" id="mainApp" style="display: none;">
-    <h1>TrueRoute Driver App</h1>
-    <div id="menu" class="menu"></div>
-    <div id="featureSection" class="output"></div>
-    <footer>TrueRoute – Developed by Thomas Hill Travel</footer>
+      <label>Date:</label>
+      <input type="date" id="checkDate" required>
+
+      <label>Odometer Reading (miles):</label>
+      <input type="number" id="odometer" required>
+
+      <h2>Checklist</h2>
+      <div class="checklist">
+        <label><input type="checkbox"> Access Equipment - Step/handrails secure and functioning</label>
+        <label><input type="checkbox"> AdBlue - Level sufficient and system not leaking</label>
+        <label><input type="checkbox"> Air Build-Up - System pressurizes correctly with no audible leaks</label>
+        <label><input type="checkbox"> Battery - Securely mounted, terminals clean, no corrosion</label>
+        <label><input type="checkbox"> Bodywork - No sharp edges or loose panels</label>
+        <label><input type="checkbox"> Brakes - Including service brake and handbrake</label>
+        <label><input type="checkbox"> Cleanliness - Interior and exterior, mirrors/windows</label>
+        <label><input type="checkbox"> Coupling (if trailer attached) - Secure, no damage</label>
+        <label><input type="checkbox"> Dashboard Warning Lights - Function and extinguish as expected</label>
+        <label><input type="checkbox"> Doors - Open/close properly and are secure</label>
+        <label><input type="checkbox"> Driver's Seat - Secure and adjusted properly</label>
+        <label><input type="checkbox"> Emergency Exits - Marked, functional, and unobstructed</label>
+        <label><input type="checkbox"> Exhaust System - No excessive smoke or leaks</label>
+        <label><input type="checkbox"> Fire Extinguishers - Present, charged, and in date</label>
+        <label><input type="checkbox"> First Aid Kit - Present and contents complete/in date</label>
+        <label><input type="checkbox"> Flooring - Secure, not damaged or slippery</label>
+        <label><input type="checkbox"> Fuel Level - Adequate for journey, cap secure</label>
+        <label><input type="checkbox"> Horn - Operational</label>
+        <label><input type="checkbox"> Lights - Headlights, indicators, brake lights, reverse, fog</label>
+        <label><input type="checkbox"> Load Security - If applicable, safe and secure</label>
+        <label><input type="checkbox"> Mirrors - Clean, secure, and adjusted</label>
+        <label><input type="checkbox"> Number Plates - Present, secure, clean and legible</label>
+        <label><input type="checkbox"> Oil Level - Within correct range</label>
+        <label><input type="checkbox"> Seatbelts - Where fitted, functional and undamaged</label>
+        <label><input type="checkbox"> Seats - Fixed properly and clean</label>
+      </div>
+
+      <h2>Signature</h2>
+      <canvas id="signature" width="300" height="100" style="border:1px solid #ccc;"></canvas>
+      <br>
+      <button type="button" onclick="clearSignature()">Clear Signature</button>
+
+      <br><br>
+      <button type="submit">Submit Walkaround Check</button>
+    </form>
+    <footer>Powered by TrueRoute | Developed by Thomas Hill Travel</footer>
   </div>
 
   <script src="app.js"></script>

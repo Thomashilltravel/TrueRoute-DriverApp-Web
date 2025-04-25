@@ -1,56 +1,52 @@
 
 body {
-  margin: 0;
   font-family: Arial, sans-serif;
-  background-color: #ffffff;
+  background: #f9f9f9;
+  padding: 20px;
   color: #222;
 }
 .app-container {
-  max-width: 480px;
-  margin: 20px auto;
+  max-width: 500px;
+  margin: 0 auto;
+  background: #fff;
   padding: 20px;
-  background: #f4f4f4;
   border-radius: 12px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  box-shadow: 0 0 8px rgba(0,0,0,0.1);
 }
-h1, h2, h3 {
+h1, h2 {
   text-align: center;
 }
-input, select {
+label {
   display: block;
+  margin-top: 10px;
+}
+input[type="text"], input[type="number"], input[type="date"] {
   width: 100%;
-  padding: 12px;
-  margin: 10px 0;
-  border-radius: 5px;
+  padding: 10px;
+  margin-top: 5px;
+  margin-bottom: 10px;
   border: 1px solid #ccc;
+  border-radius: 6px;
 }
 button {
-  padding: 12px;
-  width: 100%;
+  padding: 10px 15px;
+  margin-top: 15px;
+  font-weight: bold;
   background-color: #dac640;
   border: none;
-  border-radius: 5px;
-  font-weight: bold;
-}
-.menu button {
-  display: block;
-  width: 100%;
-  margin-bottom: 10px;
-  padding: 12px;
-  background-color: #e0e0e0;
-  border: none;
-  border-radius: 5px;
-  font-weight: bold;
-}
-.output {
-  margin-top: 20px;
-  background: #e8e8e8;
-  padding: 15px;
   border-radius: 6px;
+}
+.checklist label {
+  margin-bottom: 5px;
 }
 footer {
   margin-top: 30px;
-  font-size: 12px;
   text-align: center;
+  font-size: 12px;
   color: #888;
 }
+canvas {
+  display: block;
+  margin-top: 10px;
+}
+    
