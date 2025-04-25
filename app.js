@@ -80,7 +80,9 @@ const featureTemplates = {
             loadPayslips();
           } else if (feature === "messages") {
             loadMessagingPortal();
-          } else {
+          } else if (feature === "satnav") {
+            loadSatNav();
+          }
           
           output.innerHTML = `<strong>[${featureTemplates[feature]}]</strong> loaded in <strong>${session.mode.toUpperCase()}</strong> mode.`;
         }
@@ -203,7 +205,7 @@ const featureTemplates = {
   
     window.clearSignature = () => ctx.clearRect(0, 0, canvas.width, canvas.height);
   }
-  
+
   function submitDVSA() {
     if (!document.getElementById("fitToDrive").checked) {
       alert("You must confirm you are fit to drive.");
@@ -246,18 +248,28 @@ const featureTemplates = {
       return;
     }
   
-    const msg = input.value.trim();
-    if (!msg) {
-      alert("Please type a message first.");
-      return;
-    }
-  
     const li = document.createElement("li");
     li.textContent = `📨 ${new Date().toLocaleTimeString()}: ${msg}`;
     logList.prepend(li);
     input.value = "";
+  }function loadSatNav() {
+    document.getElementById("featureSection").innerHTML = `
+      <h2>Vehicle-Aware SatNav</h2>
+      <label>Select vehicle type:</label>
+      <select id="vehicleType">
+        <option value="coach">Coach / PSV</option>
+        <option value="lorry">HGV / Lorry</option>
+        <option value="van">Van</option>
+      </select>
+      <br>
+      <button onclick="startNavigation()">Start Navigation</button>
+      <div id="navStatus" style="margin-top: 20px;"></div>
+      <p><em>In the full version, this will include live route planning, dimension-aware routing, and GPS integration.</em></p>
+    `;
+  }function startNavigation() {
+    const type = document.getElementById("vehicleType").value;
+    const navStatus = document.getElementById("navStatus");
+    navStatus.innerHTML = `🧭 Navigation started for <strong>${type.toUpperCase()}</strong>. (Mock routing active)`;
   }
-  
-  
   
   
