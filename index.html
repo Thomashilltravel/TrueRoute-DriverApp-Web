@@ -1,42 +1,52 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>TrueRoute DVSA 2.0</title>
+  <title>TrueRoute Driver App</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="app-container" id="mainApp">
-    <h1>TrueRoute – DVSA Walkaround 2.0</h1>
-    <form id="dvsaForm">
-      <label>Driver Name:</label>
-      <input type="text" id="driverName" required>
-      <label>Vehicle Registration:</label>
-      <input type="text" id="vehicleReg" required>
-      <label>Date:</label>
-      <input type="date" id="checkDate" required>
-      <label>Odometer Reading (miles):</label>
-      <input type="number" id="odometer" required>
+  <div class="app-container" id="loginScreen">
+    <h1>Driver Login</h1>
+    <input type="text" id="driverName" placeholder="Full Name" required>
+    <input type="email" id="driverEmail" placeholder="Email Address" required>
+    <input type="text" id="driverLicence" placeholder="Licence Number" required>
+    <label for="modeSelect">Select Mode:</label>
+    <select id="modeSelect">
+      <option value="psv">PSV</option>
+      <option value="hgv">HGV</option>
+      <option value="dual">Dual</option>
+    </select>
+    <button onclick="submitLogin()">Login</button>
+  </div>
 
-      <h2>Checklist</h2>
-      <div class="checklist" id="checklistSection"></div>
+  <div class="app-container" id="uploadScreen" style="display:none;">
+    <h2>Upload Your Documents</h2>
+    <label>Driving Licence - Front:</label>
+    <input type="file" accept="image/*,.pdf" id="licenceFront">
+    <label>Driving Licence - Back:</label>
+    <input type="file" accept="image/*,.pdf" id="licenceBack">
+    <label>CPC Card - Front:</label>
+    <input type="file" accept="image/*,.pdf" id="cpcFront">
+    <label>CPC Card - Back:</label>
+    <input type="file" accept="image/*,.pdf" id="cpcBack">
+    <label>Digi Card - Front:</label>
+    <input type="file" accept="image/*,.pdf" id="digiFront">
+    <label>Digi Card - Back:</label>
+    <input type="file" accept="image/*,.pdf" id="digiBack">
+    <label>Take a Selfie:</label>
+    <input type="file" accept="image/*" capture="user" id="selfieUpload">
+    <button onclick="submitUploads()">Submit Documents</button>
+  </div>
 
-      <label><input type="checkbox" id="fitToDrive" required> I confirm I am fit to drive</label>
-
-      <h3>Signature</h3>
-      <canvas id="signature" width="300" height="100" style="border:1px solid #ccc;"></canvas>
-      <br>
-      <button type="button" onclick="clearSignature()">Clear Signature</button>
-
-      <p class="disclaimer">⚠️ If any item is marked as Fail, seek advice before continuing your journey.</p>
-      <button type="submit">Submit Walkaround Check</button>
-    </form>
-    <footer>Powered by TrueRoute | Developed by Thomas Hill Travel</footer>
+  <div class="app-container" id="mainApp" style="display: none;">
+    <h1>TrueRoute Driver App</h1>
+    <div id="menu" class="menu"></div>
+    <div id="featureSection" class="output"></div>
+    <footer>TrueRoute – Developed by Thomas Hill Travel</footer>
   </div>
 
   <script src="app.js"></script>
 </body>
 </html>
-    
