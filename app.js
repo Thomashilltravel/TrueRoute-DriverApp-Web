@@ -69,60 +69,40 @@ const featureTemplates = {
     if (session.mode === "psv") features.push(...psvOnly);
     if (session.mode === "hgv") features.push(...hgvOnly);
     if (session.mode === "dual") features.push(...dualOnly);
-
+  
+    features.forEach(feature => {
+      const btn = document.createElement("button");
+      btn.innerText = featureTemplates[feature];
+      btn.onclick = () => {
+        switch (feature) {
+          case "walkaround": loadDVSAForm(); break;
+          case "payslips": loadPayslips(); break;
+          case "messages": loadMessagingPortal(); break;
+          case "satnav": loadSatNav(); break;
+          case "passengerCode": loadPassengerCode(); break;
+          case "parcelCode": loadParcelCode(); break;
+          case "podUpload": loadPODUpload(); break;
+          case "compliance": loadComplianceCenter(); break;
+          default:
+            output.innerHTML = `<strong>[${featureTemplates[feature]}]</strong> loaded in <strong>${session.mode.toUpperCase()}</strong> mode.`;
+        }
+      };
+      menu.appendChild(btn);
+    });
   }function loadPassengerCode() {
-    document.getElementById("featureSection").innerHTML = "<p>[Passenger Code Generator Placeholder]</p>";
+    document.getElementById("featureSection").innerHTML = "<p>[Passenger QR Code Placeholder]</p>";
   }
-  
   function loadParcelCode() {
-    document.getElementById("featureSection").innerHTML = "<p>[Parcel Code Generator Placeholder]</p>";
+    document.getElementById("featureSection").innerHTML = "<p>[Parcel Code Placeholder]</p>";
   }
-  
   function loadPODUpload() {
     document.getElementById("featureSection").innerHTML = "<p>[Proof of Delivery Upload Placeholder]</p>";
   }
-  
   function loadComplianceCenter() {
     document.getElementById("featureSection").innerHTML = "<p>[Compliance Failsafe Center Placeholder]</p>";
   }
   
   
-    features.forEach(feature => {
-        const btn = document.createElement("button");
-        btn.innerText = featureTemplates[feature];
-        btn.onclick = () => {
-            switch (feature) {
-              case "walkaround":
-                loadDVSAForm();
-                break;
-              case "payslips":
-                loadPayslips();
-                break;
-              case "messages":
-                loadMessagingPortal();
-                break;
-              case "satnav":
-                loadSatNav();
-                break;
-              case "passengerCode":
-                loadPassengerCode();
-                break;
-              case "parcelCode":
-                loadParcelCode();
-                break;
-              case "podUpload":
-                loadPODUpload();
-                break;
-              case "compliance":
-                loadComplianceCenter();
-                break;
-              default:
-                output.innerHTML = `<strong>[${featureTemplates[feature]}]</strong> loaded in <strong>${session.mode.toUpperCase()}</strong> mode.`;
-            }
-          };
-          
-        menu.appendChild(btn);
-      });
       
   function loadDVSAForm() {
     const checklistItems = [
