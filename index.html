@@ -6,23 +6,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     
-   <!-- ✅ PWA App Settings -->
-<link rel="manifest" href="manifest.json">
-<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
-<link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
-<link rel="apple-touch-icon" href="icon-192.png">
-<meta name="theme-color" content="#dac640">
+    <!-- ✅ PWA App Settings -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <meta name="theme-color" content="#dac640">
 
-<!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js"></script>
-
- 
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js"></script>
   </head>
   
 <body>
+  <!-- Driver Login Screen -->
   <div class="app-container" id="loginScreen">
     <h1>Driver Login</h1>
     <input type="text" id="driverName" placeholder="Full Name" required>
@@ -37,25 +36,63 @@
     <button onclick="submitLogin()">Login</button>
   </div>
 
+  <!-- Create Username & Password Screen (visible after initial login) -->
+  <div class="app-container" id="setUpCredentialsScreen" style="display:none;">
+    <h2>Create Your Login Credentials</h2>
+
+    <!-- Username -->
+    <label for="username">Create Username:</label>
+    <input type="text" id="username" placeholder="Choose a Username" required><br><br>
+
+    <!-- Password -->
+    <label for="password">Create Password:</label>
+    <input type="password" id="password" placeholder="Create a Password" required><br><br>
+
+    <!-- Confirm Password -->
+    <label for="confirmPassword">Confirm Password:</label>
+    <input type="password" id="confirmPassword" placeholder="Confirm your Password" required><br><br>
+
+    <button onclick="submitCredentials()">Save Credentials</button>
+  </div>
+
+  <!-- Upload Documents Screen -->
   <div class="app-container" id="uploadScreen" style="display:none;">
     <h2>Upload Your Documents</h2>
-    <label>Driving Licence - Front:</label>
-    <input type="file" accept="image/*,.pdf" id="licenceFront">
-    <label>Driving Licence - Back:</label>
-    <input type="file" accept="image/*,.pdf" id="licenceBack">
-    <label>CPC Card - Front:</label>
-    <input type="file" accept="image/*,.pdf" id="cpcFront">
-    <label>CPC Card - Back:</label>
-    <input type="file" accept="image/*,.pdf" id="cpcBack">
-    <label>Digi Card - Front:</label>
-    <input type="file" accept="image/*,.pdf" id="digiFront">
-    <label>Digi Card - Back:</label>
-    <input type="file" accept="image/*,.pdf" id="digiBack">
-    <label>Take a Selfie:</label>
-    <input type="file" accept="image/*" capture="user" id="selfieUpload">
+    
+    <!-- Profile Picture -->
+    <label for="profilePicture">Upload Profile Picture:</label>
+    <input type="file" id="profilePicture" accept="image/*" required><br><br>
+
+    <!-- License Pictures -->
+    <label for="licenceFront">Driving Licence - Front:</label>
+    <input type="file" accept="image/*,.pdf" id="licenceFront" required><br><br>
+
+    <label for="licenceBack">Driving Licence - Back:</label>
+    <input type="file" accept="image/*,.pdf" id="licenceBack" required><br><br>
+
+    <!-- CPC Pictures -->
+    <label for="cpcFront">CPC Card - Front:</label>
+    <input type="file" accept="image/*,.pdf" id="cpcFront" required><br><br>
+    
+    <label for="cpcBack">CPC Card - Back:</label>
+    <input type="file" accept="image/*,.pdf" id="cpcBack" required><br><br>
+
+    <!-- Digi Card Pictures -->
+    <label for="digiFront">Digi Card - Front:</label>
+    <input type="file" accept="image/*,.pdf" id="digiFront" required><br><br>
+    
+    <label for="digiBack">Digi Card - Back:</label>
+    <input type="file" accept="image/*,.pdf" id="digiBack" required><br><br>
+
+    <!-- Selfie Upload -->
+    <label for="selfieUpload">Take a Selfie:</label>
+    <input type="file" accept="image/*" capture="user" id="selfieUpload" required><br><br>
+
+    <!-- Submit Button -->
     <button onclick="submitUploads()">Submit Documents</button>
   </div>
 
+  <!-- Main App Screen -->
   <div class="app-container" id="mainApp" style="display: none;">
     <h1>TrueRoute Driver App</h1>
     <div id="menu" class="menu"></div>
@@ -63,7 +100,6 @@
     <footer style="font-family: 'Raleway', sans-serif; font-weight: bold; font-size: 16px; color: #dac640;">
       TRUE<span style="color: #f6ea79;">ROUTE</span> – Developed by Thomas Hill Travel
     </footer>
-    
   </div>
 
   <script src="app.js"></script>
@@ -76,3 +112,4 @@
   </script>  
 </body>
 </html>
+<
