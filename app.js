@@ -387,33 +387,44 @@ window.onload = function() {
   
       <div id="incidentShareLink" style="margin-top:20px;"></div>
     `;
+
+ // 🚨 Start of the Incident Report System
+
   }function generateIncidentReport() {
     const location = document.getElementById("incidentLocation").value.trim();
-    const datetime = document.getElementById("incidentDateTime").value;
+    const dateTime = document.getElementById("incidentDateTime").value;
     const description = document.getElementById("incidentDescription").value.trim();
-    const files = document.getElementById("incidentPhotos").files;
-    const shareDiv = document.getElementById("incidentShareLink");
   
-    if (!location || !datetime || !description) {
-      alert("⚠️ Please complete all required fields before generating the report.");
+    if (!location || !dateTime || !description) {
+      alert("Please fill in all required fields!");
       return;
     }
   
-    let reportText = `📋 TrueRoute Incident Report 📋\n\nLocation: ${location}\nTime & Date: ${datetime}\n\nDescription:\n${description}\n\n`;
+    const reportText = `
+  🚗 Road Traffic Accident Report
   
-    if (files.length > 0) {
-      reportText += `Photos attached: ${files.length} file(s).`;
-    } else {
-      reportText += `No photos attached.`;
-    }
+  🗓️ Date/Time: ${new Date(dateTime).toLocaleString()}
+  📍 Location: ${location}
   
-    const blob = new Blob([reportText], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
+  📝 Description:
+  ${description}
   
-    shareDiv.innerHTML = `
-      <p>✅ Incident Report generated!</p>
-      <a href="${url}" download="incident-report.txt" style="font-weight: bold;">Download Incident Report</a>
+  ===========================
+  Company: ${companyInfo.companyName}
+  Contact: ${companyInfo.contactNumber}
+  Insurance: ${companyInfo.insuranceProvider}
+  Policy Number: ${companyInfo.insurancePolicy}
+  ===========================
+    `.trim();
+  
+    const encoded = encodeURIComponent(reportText);
+    const shareLink = `https://wa.me/?text=${encoded}`;
+  
+    document.getElementById("incidentShareLink").innerHTML = `
+      <p><strong>Ready to Send:</strong></p>
+      <a href="${shareLink}" target="_blank" style="font-size:18px;">📤 Share Incident Report via WhatsApp</a>
     `;
   }
-  
+  // 🚨 End of the Incident Report System
+
   
