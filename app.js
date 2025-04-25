@@ -124,4 +124,3 @@ function submitDVSA() {
     ✅ DVSA Check submitted successfully at ${new Date().toLocaleString()} for vehicle <strong>${vehicleReg}</strong> with <strong>${odometer} miles</strong>.
   `;
 }
-    
