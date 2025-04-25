@@ -89,22 +89,61 @@ const featureTemplates = {
       };
       menu.appendChild(btn);
     });
+
   }function loadPassengerCode() {
-    document.getElementById("featureSection").innerHTML = "<p>[Passenger QR Code Placeholder]</p>";
-  }
-  function loadParcelCode() {
-    document.getElementById("featureSection").innerHTML = "<p>[Parcel Code Placeholder]</p>";
-  }
-  function loadPODUpload() {
-    document.getElementById("featureSection").innerHTML = "<p>[Proof of Delivery Upload Placeholder]</p>";
-  }
-  function loadComplianceCenter() {
-    document.getElementById("featureSection").innerHTML = "<p>[Compliance Failsafe Center Placeholder]</p>";
+    const passengerCode = Math.random().toString(36).substr(2, 8).toUpperCase();
+    document.getElementById("featureSection").innerHTML = `
+      <h2>Passenger QR Code Generator</h2>
+      <p>Your unique code for this trip:</p>
+      <div style="font-size: 24px; font-weight: bold;">${passengerCode}</div>
+      <p><em>This code can be scanned by the customer or dispatcher to verify identity.</em></p>
+    `;
+
+  }function loadParcelCode() {
+    const parcelCode = "PCL-" + Math.random().toString(36).substr(2, 6).toUpperCase();
+    document.getElementById("featureSection").innerHTML = `
+      <h2>Parcel Code Generator</h2>
+      <p>Your unique parcel reference:</p>
+      <div style="font-size: 24px; font-weight: bold;">${parcelCode}</div>
+      <p><em>This reference is for use with parcel deliveries and tracking.</em></p>
+    `;
+
+  }function loadPODUpload() {
+    document.getElementById("featureSection").innerHTML = `
+      <h2>Proof of Delivery Upload</h2>
+      <label for="podFile">Upload POD document or photo:</label>
+      <input type="file" id="podFile" accept="image/*,.pdf"><br><br>
+      <button onclick="submitPOD()">Submit POD</button>
+      <p id="podStatus" style="margin-top: 10px;"></p>
+    `;
   }
   
+  function submitPOD() {
+    const file = document.getElementById("podFile").files[0];
+    const status = document.getElementById("podStatus");
   
-      
-  function loadDVSAForm() {
+    if (!file) {
+      status.innerHTML = `<span style="color: red;">❌ Please select a file to upload.</span>`;
+      return;
+    }
+  
+    // Placeholder logic
+    status.innerHTML = `<span style="color: green;">✅ POD "${file.name}" uploaded (simulated).</span>`;
+
+  }function loadComplianceCenter() {
+    document.getElementById("featureSection").innerHTML = `
+      <h2>Compliance Failsafe Center</h2>
+      <p><strong>Status:</strong> All systems normal ✅</p>
+      <ul>
+        <li>DVSA Check submitted: <strong>✔</strong></li>
+        <li>Licence Documents Valid: <strong>✔</strong></li>
+        <li>Driving Hours: <em>Within legal limit</em></li>
+        <li>Tachograph: <em>Sync scheduled</em></li>
+      </ul>
+      <p><em>In the full version, this will include real-time tachograph alerts, working time limits, and safety warnings.</em></p>
+    `;
+
+  }function loadDVSAForm() {
     const checklistItems = [
       "Access Equipment - Step/handrails secure and functioning",
       "AdBlue - Level sufficient and system not leaking",
@@ -216,13 +255,13 @@ const featureTemplates = {
     }, { passive: false });
   
     window.clearSignature = () => ctx.clearRect(0, 0, canvas.width, canvas.height);
-  }
 
-  function submitDVSA() {
+  }function submitDVSA() {
     if (!document.getElementById("fitToDrive").checked) {
       alert("You must confirm you are fit to drive.");
       return;
     }
+    
     alert("✅ DVSA Check Submitted!");
   }function loadPayslips() {
     const payslipList = [
