@@ -29,11 +29,11 @@ const featureTemplates = {
     }
   
     session = { name, email, licence, mode, uploadsComplete: false };
+    localStorage.setItem('truerouteSession', JSON.stringify(session)); // ✅ Save to memory
     document.getElementById("loginScreen").style.display = "none";
     document.getElementById("uploadScreen").style.display = "block";
-  }
-  
-  function submitUploads() {
+
+  }function submitUploads() {
     const requiredFields = [
       "licenceFront", "licenceBack",
       "cpcFront", "cpcBack",
@@ -341,7 +341,23 @@ const featureTemplates = {
     const type = document.getElementById("vehicleType").value;
     const navStatus = document.getElementById("navStatus");
     navStatus.innerHTML = `🧭 Navigation started for <strong>${type.toUpperCase()}</strong>. (Mock routing active)`;
-    
+
+  }// Auto-load session if saved
+window.onload = function() {
+  const savedSession = localStorage.getItem('truerouteSession');
+  if (savedSession) {
+    session = JSON.parse(savedSession);
+    if (session.uploadsComplete) {
+      document.getElementById("loginScreen").style.display = "none";
+      document.getElementById("uploadScreen").style.display = "none";
+      document.getElementById("mainApp").style.display = "block";
+      updateMenu();
+    } else {
+      document.getElementById("loginScreen").style.display = "none";
+      document.getElementById("uploadScreen").style.display = "block";
+    }
   }
+};
+
   
   
