@@ -228,6 +228,36 @@ const featureTemplates = {
       </ul>
       <p><em>Note: In the full version, these will be synced securely from the company payroll system.</em></p>
     `;
+  }function loadMessagingPortal() {
+    document.getElementById("featureSection").innerHTML = `
+      <h2>Driver Messaging Portal</h2>
+      <label><input type="checkbox" id="vehicleMoving"> Vehicle is moving</label>
+      <textarea id="messageInput" placeholder="Type your message..." rows="4"></textarea>
+      <button onclick="sendMessage()">Send Message</button>
+      <div id="messageHistory" style="margin-top: 20px;"><strong>Message Log:</strong><ul id="logList"></ul></div>
+    `;
+  }function sendMessage() {
+    const isMoving = document.getElementById("vehicleMoving").checked;
+    const input = document.getElementById("messageInput");
+    const logList = document.getElementById("logList");
+  
+    if (isMoving) {
+      alert("⚠️ You cannot send messages while the vehicle is moving.");
+      return;
+    }
+  
+    const msg = input.value.trim();
+    if (!msg) {
+      alert("Please type a message first.");
+      return;
+    }
+  
+    const li = document.createElement("li");
+    li.textContent = `📨 ${new Date().toLocaleTimeString()}: ${msg}`;
+    logList.prepend(li);
+    input.value = "";
   }
+  
+  
   
   
