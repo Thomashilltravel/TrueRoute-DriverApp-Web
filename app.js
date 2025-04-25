@@ -76,10 +76,13 @@ const featureTemplates = {
       btn.onclick = () => {
         if (feature === "walkaround") {
           loadDVSAForm();
+        } else if (feature === "payslips") {
+          loadPayslips();
         } else {
           output.innerHTML = `<strong>[${featureTemplates[feature]}]</strong> loaded in <strong>${session.mode.toUpperCase()}</strong> mode.`;
         }
       };
+      
       menu.appendChild(btn);
     });
   }
@@ -204,5 +207,24 @@ const featureTemplates = {
       return;
     }
     alert("✅ DVSA Check Submitted!");
+  }function loadPayslips() {
+    const payslipList = [
+      { name: "Payslip - March 2024", url: "#" },
+      { name: "Payslip - February 2024", url: "#" },
+      { name: "Payslip - January 2024", url: "#" }
+    ];
+  
+    document.getElementById("featureSection").innerHTML = `
+      <h2>Your Payslips</h2>
+      <ul>
+        ${payslipList.map(p => `
+          <li>
+            <a href="${p.url}" target="_blank">${p.name}</a>
+          </li>
+        `).join("")}
+      </ul>
+      <p><em>Note: In the full version, these will be synced securely from the company payroll system.</em></p>
+    `;
   }
+  
   
