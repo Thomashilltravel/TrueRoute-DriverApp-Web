@@ -8,18 +8,23 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="app-container">
-    <h1>TrueRoute Driver App</h1>
-
+  <div class="app-container" id="loginScreen">
+    <h1>Driver Login</h1>
+    <input type="text" id="driverName" placeholder="Full Name" required>
+    <input type="email" id="driverEmail" placeholder="Email Address" required>
+    <input type="text" id="driverLicence" placeholder="Licence Number" required>
     <label for="modeSelect">Select Mode:</label>
-    <select id="modeSelect" onchange="updateMenu()">
+    <select id="modeSelect">
       <option value="psv">PSV</option>
       <option value="hgv">HGV</option>
       <option value="dual">Dual</option>
     </select>
+    <button onclick="submitLogin()">Login</button>
+  </div>
 
+  <div class="app-container" id="mainApp" style="display: none;">
+    <h1>TrueRoute Driver App</h1>
     <div id="menu" class="menu"></div>
-
     <div id="output" class="output"></div>
     <footer>TrueRoute – Developed by Thomas Hill Travel</footer>
   </div>

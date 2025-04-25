@@ -16,18 +16,21 @@ body {
 h1 {
   text-align: center;
 }
-label, select {
+input, select {
   display: block;
-  margin: 10px 0 5px;
-}
-select {
-  padding: 10px;
   width: 100%;
+  padding: 12px;
+  margin: 10px 0;
   border-radius: 5px;
   border: 1px solid #ccc;
 }
-.menu {
-  margin-top: 20px;
+button {
+  padding: 12px;
+  width: 100%;
+  background-color: #dac640;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
 }
 .menu button {
   display: block;

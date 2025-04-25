@@ -10,11 +10,34 @@ const featureTemplates = {
   compliance: "Compliance Failsafe Center"
 };
 
-function updateMenu() {
+let session = {
+  name: '',
+  email: '',
+  licence: '',
+  mode: ''
+};
+
+function submitLogin() {
+  const name = document.getElementById("driverName").value.trim();
+  const email = document.getElementById("driverEmail").value.trim();
+  const licence = document.getElementById("driverLicence").value.trim();
   const mode = document.getElementById("modeSelect").value;
+
+  if (!name || !email || !licence) {
+    alert("Please complete all fields.");
+    return;
+  }
+
+  session = { name, email, licence, mode };
+  document.getElementById("loginScreen").style.display = "none";
+  document.getElementById("mainApp").style.display = "block";
+  updateMenu();
+}
+
+function updateMenu() {
   const menu = document.getElementById("menu");
   const output = document.getElementById("output");
-  menu.innerHTML = ""; // clear menu
+  menu.innerHTML = "";
 
   const always = ["walkaround", "payslips", "messages", "satnav", "compliance"];
   const psvOnly = ["passengerCode"];
@@ -22,19 +45,17 @@ function updateMenu() {
   const dualOnly = ["passengerCode", "parcelCode", "podUpload"];
 
   let features = [...always];
-  if (mode === "psv") features.push(...psvOnly);
-  if (mode === "hgv") features.push(...hgvOnly);
-  if (mode === "dual") features.push(...dualOnly);
+  if (session.mode === "psv") features.push(...psvOnly);
+  if (session.mode === "hgv") features.push(...hgvOnly);
+  if (session.mode === "dual") features.push(...dualOnly);
 
   features.forEach(feature => {
     const btn = document.createElement("button");
     btn.innerText = featureTemplates[feature];
     btn.onclick = () => {
-      output.innerHTML = `<strong>[${featureTemplates[feature]}]</strong> loaded in <strong>${mode.toUpperCase()}</strong> mode. (Function not implemented yet)`;
+      output.innerHTML = `<strong>[${featureTemplates[feature]}]</strong> loaded in <strong>${session.mode.toUpperCase()}</strong> mode.`;
     };
     menu.appendChild(btn);
   });
 }
-
-window.onload = updateMenu;
     
