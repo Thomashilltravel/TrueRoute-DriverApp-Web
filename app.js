@@ -1,3 +1,27 @@
+// Import the necessary Firebase functions
+import { initializeApp } from "firebase/app";
+import { getFirestore } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
+import { getStorage } from "firebase/storage";
+
+// Your Firebase configuration (use the API key you provided)
+const firebaseConfig = {
+  apiKey: "AIzaSyCVJqDnJVCBgimKAZOnb9NIMWN92fbaCtQ",
+  authDomain: "trueroute-7cd95.firebaseapp.com",
+  projectId: "trueroute-7cd95",
+  storageBucket: "trueroute-7cd95.firebasestorage.app",
+  messagingSenderId: "1076186848093",
+  appId: "1:1076186848093:web:aaeabcf3d98f4c413fe6b4"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+
+// Initialize Firestore, Auth, and Storage services
+const firestore = getFirestore(app);
+const auth = getAuth(app);
+const storage = getStorage(app);
+
 const featureTemplates = {
     walkaround: "DVSA Walkaround Check",
     payslips: "Payslip Viewer",
