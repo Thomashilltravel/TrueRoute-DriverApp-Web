@@ -1,60 +1,98 @@
+/* General Reset */
 body {
-    font-family: Arial, sans-serif;
-    background: #f4f4f4;
-    padding: 10px;
+    font-family: 'Raleway', sans-serif;
+    background-color: #f4f4f4;
     margin: 0;
-    color: #222;
+    padding: 0;
   }
   
+  /* Container Styling */
   .app-container {
-    max-width: 480px;
-    margin: 20px auto;
+    max-width: 600px;
+    margin: 40px auto;
     padding: 20px;
-    background: #fff;
+    background: #ffffff;
     border-radius: 12px;
-    box-shadow: 0 0 8px rgba(0,0,0,0.1);
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
   }
   
-  input, select, button, textarea {
-    display: block;
+  /* Headings */
+  h1, h2 {
+    color: #342800;
+    text-align: center;
+  }
+  
+  /* Inputs, Selects, Textareas */
+  input[type="text"],
+  input[type="email"],
+  input[type="file"],
+  input[type="number"],
+  select,
+  textarea {
     width: 100%;
-    padding: 10px;
-    margin: 12px 0;
-    font-size: 16px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
+    padding: 12px;
+    margin: 8px 0 20px;
     box-sizing: border-box;
+    border: 2px solid #dac640;
+    border-radius: 6px;
+    font-size: 16px;
   }
   
+  /* Buttons */
   button {
-    background: #0066cc;
-    color: white;
+    background: linear-gradient(90deg, #dac640 0%, #f6ea79 100%);
+    color: #342800;
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: bold;
     border: none;
+    border-radius: 8px;
     cursor: pointer;
+    width: 100%;
+    margin-top: 10px;
   }
   
   button:hover {
-    background: #004d99;
+    background: linear-gradient(90deg, #f6ea79 0%, #dac640 100%);
   }
   
-  .menu button {
+  /* Footer */
+  footer {
+    text-align: center;
+    font-size: 14px;
+    margin-top: 40px;
+    color: #dac640;
+    font-family: 'Raleway', sans-serif;
+    font-weight: bold;
+  }
+  
+  /* Checklist Specific (DVSA Walkaround) */
+  .check-options {
+    display: flex;
+    align-items: center;
+    gap: 10px;
     margin-bottom: 10px;
-    font-weight: bold;
   }
   
-  .output {
-    margin-top: 20px;
+  /* Message Log */
+  #messageHistory ul {
+    list-style: none;
+    padding: 0;
   }
   
-  canvas {
-    margin-top: 10px;
-    border: 1px solid #ccc;
-    touch-action: none;
+  #messageHistory li {
+    background: #f6ea79;
+    padding: 8px;
+    margin: 5px 0;
+    border-radius: 6px;
   }
   
-  .disclaimer {
-    color: #c00;
-    font-weight: bold;
+  /* Responsive */
+  @media (max-width: 600px) {
+    .app-container {
+      margin: 20px;
+    }
   }
+  
   
   

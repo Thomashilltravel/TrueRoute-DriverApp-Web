@@ -133,16 +133,15 @@ const featureTemplates = {
   }function loadComplianceCenter() {
     document.getElementById("featureSection").innerHTML = `
       <h2>Compliance Failsafe Center</h2>
-      <p><strong>Status:</strong> All systems normal ✅</p>
+      <p><strong>Status:</strong> All Systems Normal ✅</p>
       <ul>
-        <li>DVSA Check submitted: <strong>✔</strong></li>
-        <li>Licence Documents Valid: <strong>✔</strong></li>
-        <li>Driving Hours: <em>Within legal limit</em></li>
-        <li>Tachograph: <em>Sync scheduled</em></li>
+        <li><a href="https://www.gov.uk/government/publications/psv-operator-licensing-a-guide-for-operators" target="_blank">PSV Operator Licensing – Official GOV.UK Guide</a></li>
+        <li><a href="https://www.gov.uk/government/publications/hgv-operator-licensing-a-guide-for-operators" target="_blank">HGV Operator Licensing – Official GOV.UK Guide</a></li>
+        <li><a href="https://www.gov.uk/government/publications/guide-to-maintaining-roadworthiness" target="_blank">Maintaining Roadworthiness – DVSA Guide</a></li>
+        <li><a href="https://www.gov.uk/government/organisations/driver-and-vehicle-standards-agency" target="_blank">DVSA Official Website</a></li>
       </ul>
-      <p><em>In the full version, this will include real-time tachograph alerts, working time limits, and safety warnings.</em></p>
+      <p><em>Note: Compliance tracking will be expanded in the full version to include legal driving hours, digital tachograph alerts, and licence monitoring.</em></p>
     `;
-
   }function loadDVSAForm() {
     const checklistItems = [
       "Access Equipment - Step/handrails secure and functioning",
@@ -261,7 +260,7 @@ const featureTemplates = {
       alert("You must confirm you are fit to drive.");
       return;
     }
-    
+
     alert("✅ DVSA Check Submitted!");
   }function loadPayslips() {
     const payslipList = [
