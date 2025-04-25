@@ -2,39 +2,59 @@ body {
     font-family: Arial, sans-serif;
     background: #f4f4f4;
     padding: 10px;
+    margin: 0;
     color: #222;
   }
+  
   .app-container {
-    max-width: 500px;
-    margin: 0 auto;
+    max-width: 480px;
+    margin: 20px auto;
     padding: 20px;
     background: #fff;
     border-radius: 12px;
     box-shadow: 0 0 8px rgba(0,0,0,0.1);
   }
-  input, select, button {
+  
+  input, select, button, textarea {
     display: block;
     width: 100%;
     padding: 10px;
-    margin: 10px 0;
+    margin: 12px 0;
     font-size: 16px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
   }
+  
+  button {
+    background: #0066cc;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background: #004d99;
+  }
+  
   .menu button {
     margin-bottom: 10px;
     font-weight: bold;
   }
+  
   .output {
     margin-top: 20px;
   }
+  
   canvas {
-    display: block;
     margin-top: 10px;
-    width: 100%;
-    max-width: 480px;
+    border: 1px solid #ccc;
     touch-action: none;
   }
+  
   .disclaimer {
-    color: #b00;
+    color: #c00;
     font-weight: bold;
   }
+  
   

@@ -71,25 +71,24 @@ const featureTemplates = {
     if (session.mode === "dual") features.push(...dualOnly);
   
     features.forEach(feature => {
-      const btn = document.createElement("button");
-      btn.innerText = featureTemplates[feature];
-      btn.onclick = () => {
-        if (feature === "walkaround") {
-            loadDVSAForm();
-          } else if (feature === "payslips") {
-            loadPayslips();
-          } else if (feature === "messages") {
-            loadMessagingPortal();
-          } else if (feature === "satnav") {
-            loadSatNav();
-          }
-          
-          output.innerHTML = `<strong>[${featureTemplates[feature]}]</strong> loaded in <strong>${session.mode.toUpperCase()}</strong> mode.`;
-        }
-      };
+        const btn = document.createElement("button");
+        btn.innerText = featureTemplates[feature];
+        btn.onclick = () => {
+          if (feature === "walkaround") {
+              loadDVSAForm();
+            } else if (feature === "payslips") {
+              loadPayslips();
+            } else if (feature === "messages") {
+              loadMessagingPortal();
+            } else if (feature === "satnav") {
+              loadSatNav();
+            }
       
-      menu.appendChild(btn);
-    });
+            output.innerHTML = `<strong>[${featureTemplates[feature]}]</strong> loaded in <strong>${session.mode.toUpperCase()}</strong> mode.`;
+        };
+        menu.appendChild(btn);
+      });
+      
   }
   
   function loadDVSAForm() {
@@ -245,6 +244,13 @@ const featureTemplates = {
   
     if (isMoving) {
       alert("⚠️ You cannot send messages while the vehicle is moving.");
+      return;
+    }
+  
+    const msg = input.value.trim();   // <<<< THIS LINE IS MISSING
+  
+    if (!msg) {
+      alert("Please type a message first.");
       return;
     }
   
