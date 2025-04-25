@@ -432,19 +432,17 @@ window.onload = function() {
     `;
   }
   // 🚨 End of the Incident Report System
-
-  function loadDriverProfile() {
+   
+    function loadDriverProfile() {
     document.getElementById("featureSection").innerHTML = `
       <h2>Driver Profile</h2>
-      <ul style="font-size:18px;">
-        <li><strong>Name:</strong> ${session.name}</li>
-        <li><strong>Email:</strong> ${session.email}</li>
-        <li><strong>Licence Number:</strong> ${session.licence}</li>
-        <li><strong>Driving Mode:</strong> ${session.mode.toUpperCase()}</li>
-      </ul>
-      <p><em>Your profile was created based on your login details.</em></p>
+      <p><strong>Name:</strong> ${session.name}</p>
+      <p><strong>Email:</strong> ${session.email}</p>
+      <p><strong>Licence Number:</strong> ${session.licence}</p>
+      <p><strong>Mode:</strong> ${session.mode.toUpperCase()}</p>
     `;
   }
+  
   
 
   
