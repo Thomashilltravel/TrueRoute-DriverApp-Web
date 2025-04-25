@@ -133,15 +133,17 @@ const featureTemplates = {
   }function loadComplianceCenter() {
     document.getElementById("featureSection").innerHTML = `
       <h2>Compliance Failsafe Center</h2>
-      <p><strong>Status:</strong> All Systems Normal ✅</p>
+      <p><strong>Status:</strong> All systems normal ✅</p>
       <ul>
-        <li><a href="https://www.gov.uk/government/publications/psv-operator-licensing-a-guide-for-operators" target="_blank">PSV Operator Licensing – Official GOV.UK Guide</a></li>
-        <li><a href="https://www.gov.uk/government/publications/hgv-operator-licensing-a-guide-for-operators" target="_blank">HGV Operator Licensing – Official GOV.UK Guide</a></li>
-        <li><a href="https://www.gov.uk/government/publications/guide-to-maintaining-roadworthiness" target="_blank">Maintaining Roadworthiness – DVSA Guide</a></li>
-        <li><a href="https://www.gov.uk/government/organisations/driver-and-vehicle-standards-agency" target="_blank">DVSA Official Website</a></li>
+        <li>DVSA Check submitted: <strong>✔</strong></li>
+        <li>Licence Documents Valid: <strong>✔</strong></li>
+        <li>Driving Hours: <em>Within legal limit</em></li>
+        <li>Tachograph: <em>Sync scheduled</em></li>
       </ul>
-      <p><em>Note: Compliance tracking will be expanded in the full version to include legal driving hours, digital tachograph alerts, and licence monitoring.</em></p>
+      <button onclick="openIncidentReport()">Report an Incident (RTA)</button>
+      <p><em>In the full version, this will include real-time tachograph alerts, working time limits, and safety warnings.</em></p>
     `;
+
   }function loadDVSAForm() {
     const checklistItems = [
       "Access Equipment - Step/handrails secure and functioning",
@@ -344,20 +346,68 @@ const featureTemplates = {
 
   }// Auto-load session if saved
 window.onload = function() {
-  const savedSession = localStorage.getItem('truerouteSession');
-  if (savedSession) {
-    session = JSON.parse(savedSession);
-    if (session.uploadsComplete) {
-      document.getElementById("loginScreen").style.display = "none";
-      document.getElementById("uploadScreen").style.display = "none";
-      document.getElementById("mainApp").style.display = "block";
-      updateMenu();
-    } else {
-      document.getElementById("loginScreen").style.display = "none";
-      document.getElementById("uploadScreen").style.display = "block";
+    const savedSession = localStorage.getItem('truerouteSession');
+    if (savedSession) {
+      session = JSON.parse(savedSession);
+      if (session.uploadsComplete) {
+        document.getElementById("loginScreen").style.display = "none";
+        document.getElementById("uploadScreen").style.display = "none";
+        document.getElementById("mainApp").style.display = "block";
+        updateMenu();
+      } else {
+        document.getElementById("loginScreen").style.display = "none";
+        document.getElementById("uploadScreen").style.display = "block";
+      }
     }
+  };  // 👈 CLOSE the window.onload function properly here!
+  
+  // Now the Incident Form function starts outside of it:
+  function openIncidentReport() {
+    document.getElementById("featureSection").innerHTML = `
+      <h2>Incident Report Form (Road Traffic Accident)</h2>
+      <label>Location:</label><br>
+      <input type="text" id="incidentLocation" placeholder="Enter accident location"><br><br>
+  
+      <label>Time and Date:</label><br>
+      <input type="datetime-local" id="incidentDateTime"><br><br>
+  
+      <label>Brief Description:</label><br>
+      <textarea id="incidentDescription" rows="4" placeholder="Describe what happened..."></textarea><br><br>
+  
+      <label>Upload Any Photos:</label><br>
+      <input type="file" id="incidentPhotos" accept="image/*" multiple><br><br>
+  
+      <button onclick="generateIncidentReport()">Generate Shareable Report</button>
+  
+      <div id="incidentShareLink" style="margin-top:20px;"></div>
+    `;
+  }function generateIncidentReport() {
+    const location = document.getElementById("incidentLocation").value.trim();
+    const datetime = document.getElementById("incidentDateTime").value;
+    const description = document.getElementById("incidentDescription").value.trim();
+    const files = document.getElementById("incidentPhotos").files;
+    const shareDiv = document.getElementById("incidentShareLink");
+  
+    if (!location || !datetime || !description) {
+      alert("⚠️ Please complete all required fields before generating the report.");
+      return;
+    }
+  
+    let reportText = `📋 TrueRoute Incident Report 📋\n\nLocation: ${location}\nTime & Date: ${datetime}\n\nDescription:\n${description}\n\n`;
+  
+    if (files.length > 0) {
+      reportText += `Photos attached: ${files.length} file(s).`;
+    } else {
+      reportText += `No photos attached.`;
+    }
+  
+    const blob = new Blob([reportText], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+  
+    shareDiv.innerHTML = `
+      <p>✅ Incident Report generated!</p>
+      <a href="${url}" download="incident-report.txt" style="font-weight: bold;">Download Incident Report</a>
+    `;
   }
-};
-
   
   
