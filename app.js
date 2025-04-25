@@ -75,10 +75,13 @@ const featureTemplates = {
       btn.innerText = featureTemplates[feature];
       btn.onclick = () => {
         if (feature === "walkaround") {
-          loadDVSAForm();
-        } else if (feature === "payslips") {
-          loadPayslips();
-        } else {
+            loadDVSAForm();
+          } else if (feature === "payslips") {
+            loadPayslips();
+          } else if (feature === "messages") {
+            loadMessagingPortal();
+          } else {
+          
           output.innerHTML = `<strong>[${featureTemplates[feature]}]</strong> loaded in <strong>${session.mode.toUpperCase()}</strong> mode.`;
         }
       };
