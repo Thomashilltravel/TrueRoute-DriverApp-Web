@@ -14,7 +14,8 @@ let session = {
   name: '',
   email: '',
   licence: '',
-  mode: ''
+  mode: '',
+  uploadsComplete: false
 };
 
 function submitLogin() {
@@ -28,8 +29,28 @@ function submitLogin() {
     return;
   }
 
-  session = { name, email, licence, mode };
+  session = { name, email, licence, mode, uploadsComplete: false };
   document.getElementById("loginScreen").style.display = "none";
+  document.getElementById("uploadScreen").style.display = "block";
+}
+
+function submitUploads() {
+  const requiredFields = [
+    "licenceFront", "licenceBack",
+    "cpcFront", "cpcBack",
+    "digiFront", "digiBack",
+    "selfieUpload"
+  ];
+
+  for (const fieldId of requiredFields) {
+    if (document.getElementById(fieldId).files.length === 0) {
+      alert("Please upload all required files including front and back of each card.");
+      return;
+    }
+  }
+
+  session.uploadsComplete = true;
+  document.getElementById("uploadScreen").style.display = "none";
   document.getElementById("mainApp").style.display = "block";
   updateMenu();
 }

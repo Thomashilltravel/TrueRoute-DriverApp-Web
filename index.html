@@ -22,6 +22,25 @@
     <button onclick="submitLogin()">Login</button>
   </div>
 
+  <div class="app-container" id="uploadScreen" style="display:none;">
+    <h2>Upload Your Documents</h2>
+    <label>Driving Licence - Front:</label>
+    <input type="file" accept="image/*,.pdf" id="licenceFront">
+    <label>Driving Licence - Back:</label>
+    <input type="file" accept="image/*,.pdf" id="licenceBack">
+    <label>CPC Card - Front:</label>
+    <input type="file" accept="image/*,.pdf" id="cpcFront">
+    <label>CPC Card - Back:</label>
+    <input type="file" accept="image/*,.pdf" id="cpcBack">
+    <label>Digi Card - Front:</label>
+    <input type="file" accept="image/*,.pdf" id="digiFront">
+    <label>Digi Card - Back:</label>
+    <input type="file" accept="image/*,.pdf" id="digiBack">
+    <label>Take a Selfie:</label>
+    <input type="file" accept="image/*" capture="user" id="selfieUpload">
+    <button onclick="submitUploads()">Submit Documents</button>
+  </div>
+
   <div class="app-container" id="mainApp" style="display: none;">
     <h1>TrueRoute Driver App</h1>
     <div id="menu" class="menu"></div>
