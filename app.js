@@ -260,8 +260,18 @@ const featureTemplates = {
       alert("You must confirm you are fit to drive.");
       return;
     }
-
+  
     alert("✅ DVSA Check Submitted!");
+  
+    // Auto-close walkaround and return to dashboard
+    const output = document.getElementById("featureSection");
+    output.innerHTML = `
+      <p>✅ Walkaround Check submitted successfully.</p>
+      <p>Returning to dashboard...</p>
+    `;
+    
+    setTimeout(updateMenu, 1500); // After 1.5 seconds, reload dashboard
+
   }function loadPayslips() {
     const payslipList = [
       { name: "Payslip - March 2024", url: "#" },
@@ -280,6 +290,7 @@ const featureTemplates = {
       </ul>
       <p><em>Note: In the full version, these will be synced securely from the company payroll system.</em></p>
     `;
+
   }function loadMessagingPortal() {
     document.getElementById("featureSection").innerHTML = `
       <h2>Driver Messaging Portal</h2>
@@ -288,6 +299,7 @@ const featureTemplates = {
       <button onclick="sendMessage()">Send Message</button>
       <div id="messageHistory" style="margin-top: 20px;"><strong>Message Log:</strong><ul id="logList"></ul></div>
     `;
+
   }function sendMessage() {
     const isMoving = document.getElementById("vehicleMoving").checked;
     const input = document.getElementById("messageInput");
@@ -309,6 +321,7 @@ const featureTemplates = {
     li.textContent = `📨 ${new Date().toLocaleTimeString()}: ${msg}`;
     logList.prepend(li);
     input.value = "";
+
   }function loadSatNav() {
     document.getElementById("featureSection").innerHTML = `
       <h2>Vehicle-Aware SatNav</h2>
@@ -323,10 +336,12 @@ const featureTemplates = {
       <div id="navStatus" style="margin-top: 20px;"></div>
       <p><em>In the full version, this will include live route planning, dimension-aware routing, and GPS integration.</em></p>
     `;
+
   }function startNavigation() {
     const type = document.getElementById("vehicleType").value;
     const navStatus = document.getElementById("navStatus");
     navStatus.innerHTML = `🧭 Navigation started for <strong>${type.toUpperCase()}</strong>. (Mock routing active)`;
+    
   }
   
   
