@@ -1,6 +1,6 @@
 /* 
  * TrueRoute Driver App
- * Developed by Thomas Hill Travel
+ * Developed by Thomas Hill Travel LTD
  * All rights reserved.
  * License: TrueRoute proprietary license
  * Version: 1.0.0 (Alpha)
@@ -32,7 +32,7 @@ let session = {
 };
 
 const companyInfo = {
-  companyName: "Thomas Hill Travel",
+  companyName: "Thomas Hill Travel LTD",
   contactNumber: "+44 1234 567890",
   insuranceProvider: "Elite Motor Insurers",
   insurancePolicy: "TH-INS-2025-001"
@@ -49,6 +49,26 @@ const featureTemplates = {
   compliance: "Compliance Failsafe Center",
   profile: "My Profile"
 };
+
+function submitDriverDetails() {
+  const name = document.getElementById("driverName").value.trim();
+  const email = document.getElementById("driverEmail").value.trim();
+  const licence = document.getElementById("driverLicence").value.trim();
+  const mode = document.getElementById("modeSelect").value;
+
+  if (!name || !email || !licence) {
+    alert("Please complete all fields.");
+    return;
+  }
+
+  session = { name, email, licence, mode, uploadsComplete: false };
+  localStorage.setItem('truerouteSession', JSON.stringify(session)); // Save
+
+  document.getElementById("loginScreen").style.display = "none";
+  document.getElementById("uploadScreen").style.display = "block";
+}
+window.submitDriverDetails = submitDriverDetails;
+
 
 // ✅ Driver Login
 function submitLogin() {
@@ -68,6 +88,52 @@ function submitLogin() {
   document.getElementById("uploadScreen").style.display = "block";
 }
 window.submitLogin = submitLogin;
+
+// 🧠 SUBMIT DRIVER DETAILS FUNCTION (new)
+function submitDriverDetails() {
+  const name = document.getElementById("driverName").value.trim();
+  const email = document.getElementById("driverEmail").value.trim();
+  const licence = document.getElementById("driverLicence").value.trim();
+  const mode = document.getElementById("modeSelect").value;
+
+  if (!name || !email || !licence) {
+    alert("Please complete all fields.");
+    return;
+  }
+
+  session = { name, email, licence, mode, uploadsComplete: false };
+  localStorage.setItem('truerouteSession', JSON.stringify(session)); // Save
+
+  // 🧠 NEW: Push driver profile to Firestore automatically
+  firestore.collection('drivers').doc(email).set({
+    name: name,
+    email: email,
+    licence: licence,
+    mode: mode,
+    uploadsComplete: false
+  })
+  .then(() => {
+    console.log("✅ Driver profile saved to Firestore!");
+  })
+  .catch((error) => {
+    console.error("❌ Error saving driver profile:", error);
+  });
+
+  document.getElementById("loginScreen").style.display = "none";
+  document.getElementById("uploadScreen").style.display = "block";
+}
+window.submitDriverDetails = submitDriverDetails;
+
+// 🧠 UPLOADS SCREEN FUNCTION (your original code below it)
+function submitUploads() {
+  const requiredFields = [
+    "licenceFront", "licenceBack",
+    "cpcFront", "cpcBack",
+    "digiFront", "digiBack",
+    "selfieUpload"
+  ];
+  // ... (etc)
+}
 
 // ✅ Document Upload Screen
 function submitUploads() {

@@ -30,22 +30,21 @@
 
 <body>
 
-  <!-- Driver Login Screen -->
-  <div class="app-container" id="loginScreen">
-    <h1>Driver Login</h1>
-    <input type="text" id="driverName" placeholder="Full Name" required>
-    <input type="email" id="driverEmail" placeholder="Email Address" required>
-    <input type="text" id="driverLicence" placeholder="Licence Number" required>
-    <label for="modeSelect">Select Mode:</label>
-    <select id="modeSelect">
-      <option value="psv">PSV</option>
-      <option value="hgv">HGV</option>
-      <option value="dual">Dual</option>
-    </select>
-    <button onclick="submitLogin()">Login</button>
-    <!-- Commented out until feature is built -->
-    <!-- <a href="#" id="forgotPasswordLink" onclick="showForgotPasswordScreen()">Forgot Password?</a> -->
-  </div>
+  <!-- Driver Login -->
+<div class="app-container" id="loginScreen">
+  <h1>Driver Login</h1>
+  <input type="text" id="driverName" placeholder="Full Name" required>
+  <input type="email" id="driverEmail" placeholder="Email Address" required>
+  <input type="text" id="driverLicence" placeholder="Licence Number" required>
+  <label>Select Mode:</label>
+  <select id="modeSelect">
+    <option value="psv">PSV</option>
+    <option value="hgv">HGV</option>
+    <option value="dual">Dual</option>
+  </select>
+  <button onclick="submitDriverDetails()">Continue</button>
+</div>
+
 
   <!-- Upload Documents Screen -->
   <div class="app-container" id="uploadScreen" style="display:none;">

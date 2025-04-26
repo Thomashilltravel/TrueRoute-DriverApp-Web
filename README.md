@@ -1,7 +1,7 @@
 # TrueRoute Driver App
 
 ## Overview
-The **TrueRoute Driver App** is developed and maintained by **Thomas Hill Travel**. This software is a **white-label SaaS solution** designed for managing driver operations, including scheduling, compliance checks, document uploads, and more. 
+The **TrueRoute Driver App** is developed and maintained by **Thomas Hill Travel LTD**. This software is a **white-label SaaS solution** designed for managing driver operations, including scheduling, compliance checks, document uploads, and more. 
 
 Licensed businesses can **rebrand** and use the app under their own logo and branding, while still leveraging the core features of **TrueRoute**.
 
@@ -10,18 +10,18 @@ Licensed businesses can **rebrand** and use the app under their own logo and bra
 ## Ownership & Licensing
 
 ### Developed by:
-- **Thomas Hill Travel**
+- **Thomas Hill Travel LTD**
 - All rights reserved.
 
 ### License:
-This software is licensed under the **TrueRoute proprietary license**. **White-label clients** may rebrand the software with their own logos and colors, but **Thomas Hill Travel** retains ownership of the core application.
+This software is licensed under the **TrueRoute proprietary license**. **White-label clients** may rebrand the software with their own logos and colors, but **Thomas Hill Travel LTD** retains ownership of the core application.
 
 You may not copy, modify, distribute, or use this software for any purpose other than the licensed use as a SaaS or rebranded product. All other rights are reserved.
 
 ### Version Information:
 - **Version**: 1.0.0 (Alpha)
 - **Signature**: **TH-TR-2025-0425**
-- **Copyright (c) 2025** Thomas Hill Travel
+- **Copyright (c) 2025** Thomas Hill Travel LTD
 
 ---
 
@@ -59,6 +59,6 @@ This software is provided **"as-is"** without any warranty or support. **Thomas 
 
 ## Contact
 For inquiries or support, contact **Thomas Hill Travel**:
-- **Phone**: +44 1234 567890
-- **Email**: support@thomashilltravel.com
+- **Phone**: +44 1443 555994
+- **Email**: thomashilltravel@outlook.com
 # TrueRoute-DriverApp-Web
