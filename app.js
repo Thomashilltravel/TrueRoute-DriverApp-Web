@@ -10,7 +10,7 @@
 
 // Import the necessary Firebase functions
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
+import { getFirestore, collection, query, where, getDocs, orderBy} from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { getStorage } from "firebase/storage";
 
@@ -32,6 +32,28 @@ const firestore = getFirestore(app);
 const auth = getAuth(app);
 const storage = getStorage(app);
 
+// 2. Query Function - Put this after the Firebase initialization
+async function getDrivers() {
+  const driversRef = collection(firestore, 'drivers');
+  const q = query(driversRef,
+    where('mode', '==', 'PSV'),
+    where('uploadsComplete', '==', true),
+    orderBy('name')
+  );
+
+  try {
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach(doc => {
+      console.log(doc.id, " => ", doc.data()); // Log each driver's data
+    });
+  } catch (error) {
+    console.error("Error fetching documents: ", error);
+  }
+}
+
+// 3. Call the function after Firebase setup - Place this at the bottom or on an event
+getDrivers();
+
 const featureTemplates = {
     walkaround: "DVSA Walkaround Check",
     payslips: "Payslip Viewer",
@@ -44,7 +66,7 @@ const featureTemplates = {
     profile: "My Profile" // ✅ ADD THIS
   };
   
-  
+
   let session = {
     name: '',
     email: '',
