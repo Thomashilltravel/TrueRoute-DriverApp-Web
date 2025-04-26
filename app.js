@@ -10,9 +10,14 @@
 
 // Import the necessary Firebase functions
 import { initializeApp } from "firebase/app";
-import { getFirestore, collection, query, where, getDocs, orderBy} from "firebase/firestore";
-import { getAuth } from "firebase/auth";
+import { 
+  getFirestore, collection, query, where, getDocs, orderBy, setDoc, doc 
+} from "firebase/firestore";
+import { 
+  getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail 
+} from "firebase/auth";
 import { getStorage } from "firebase/storage";
+
 
 // Your Firebase configuration (use the API key you provided)
 const firebaseConfig = {
@@ -541,28 +546,29 @@ window.onload = function() {
   // 🚨 End of the Incident Report System
    
   // Load Driver Profile from Firestore (can store details here)
-function loadDriverProfile() {
-  document.getElementById("featureSection").innerHTML = `
-    <h2>Driver Profile</h2>
-    <p><strong>Name:</strong> ${session.name}</p>
-    <p><strong>Email:</strong> ${session.email}</p>
-    <p><strong>Licence Number:</strong> ${session.licence}</p>
-    <p><strong>Mode:</strong> ${session.mode.toUpperCase()}</p>
-  `;
-
-  // Store profile in Firestore
-  const userRef = firestore.collection('drivers').doc(session.email);
-  userRef.set({
-    name: session.name,
-    email: session.email,
-    licence: session.licence,
-    mode: session.mode
-  }).then(() => {
-    console.log("Driver profile stored in Firestore!");
-  }).catch(error => {
-    console.error("Error storing profile: ", error);
-  });
-}
+  function loadDriverProfile() {
+    document.getElementById("featureSection").innerHTML = `
+      <h2>Driver Profile</h2>
+      <p><strong>Name:</strong> ${session.name}</p>
+      <p><strong>Email:</strong> ${session.email}</p>
+      <p><strong>Licence Number:</strong> ${session.licence}</p>
+      <p><strong>Mode:</strong> ${session.mode.toUpperCase()}</p>
+    `;
+  
+    // Correct Firestore storage
+    const userRef = doc(firestore, 'drivers', session.email);
+    setDoc(userRef, {
+      name: session.name,
+      email: session.email,
+      licence: session.licence,
+      mode: session.mode
+    }).then(() => {
+      console.log("Driver profile stored in Firestore!");
+    }).catch(error => {
+      console.error("Error storing profile: ", error);
+    });
+  }
+  
 
   
   
