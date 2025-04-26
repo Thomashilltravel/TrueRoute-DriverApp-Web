@@ -129,40 +129,38 @@ function login() {
     });
 }
 
-// Password Reset
-function resetPassword() {
-  const email = document.getElementById("email").value;
-
-  sendPasswordResetEmail(auth, email)
-    .then(() => {
-      alert("Password reset email sent!");
-    })
-    .catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      console.error(`Error ${errorCode}: ${errorMessage}`);
-    });
-
-}function submitUploads() {
-  const requiredFields = [
-    "licenceFront", "licenceBack",
-    "cpcFront", "cpcBack",
-    "digiFront", "digiBack",
-    "selfieUpload"
-  ];
-
-  for (const fieldId of requiredFields) {
-    if (document.getElementById(fieldId).files.length === 0) {
-      alert("Please upload all required files including front and back of each card.");
-      return;
-    }
+  // Load Driver Profile from Firestore (can store details here)
+  function loadDriverProfile() {
+    document.getElementById("featureSection").innerHTML = `
+      <h2>Driver Profile</h2>
+      <p><strong>Name:</strong> ${session.name}</p>
+      <p><strong>Email:</strong> ${session.email}</p>
+      <p><strong>Licence Number:</strong> ${session.licence}</p>
+      <p><strong>Mode:</strong> ${session.mode.toUpperCase()}</p>
+    `;
   }
 
-  session.uploadsComplete = true;
-  document.getElementById("uploadScreen").style.display = "none";
-  document.getElementById("mainApp").style.display = "block";
-  updateMenu();
-}
+    function submitUploads() {
+      const requiredFields = [
+        "licenceFront", "licenceBack",
+        "cpcFront", "cpcBack",
+        "digiFront", "digiBack",
+        "selfieUpload"
+      ];
+    
+      for (const fieldId of requiredFields) {
+        if (document.getElementById(fieldId).files.length === 0) {
+          alert("Please upload all required files including front and back of each card.");
+          return;
+        }
+      }
+    
+      session.uploadsComplete = true;
+      document.getElementById("uploadScreen").style.display = "none";
+      document.getElementById("mainApp").style.display = "block";
+      updateMenu();
+    }
+    
 
 // Update the Dynamic Menu Based on the Driver's Mode
 function updateMenu() {
@@ -201,7 +199,8 @@ function updateMenu() {
     };
     menu.appendChild(btn);
   });
-}
+} // ✅ CLOSE updateMenu() here safely
+
 
    for (const fieldId of requiredFields) {
       if (document.getElementById(fieldId).files.length === 0) {
@@ -555,6 +554,7 @@ window.onload = function() {
       <p><strong>Licence Number:</strong> ${session.licence}</p>
       <p><strong>Mode:</strong> ${session.mode.toUpperCase()}</p>
     `;
+  }
   
     // Correct Firestore storage
     const userRef = doc(firestore, 'drivers', session.email);
@@ -567,11 +567,5 @@ window.onload = function() {
       console.log("Driver profile stored in Firestore!");
     }).catch(error => {
       console.error("Error storing profile: ", error);
-    });
-  }
-  
-
-  
-  
-
-  
+  });
+ 
