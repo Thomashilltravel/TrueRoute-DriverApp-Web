@@ -84,6 +84,9 @@ const featureTemplates = {
       alert("Please complete all fields.");
       return;
     }
+
+    // ✅ ADD THIS at the bottom
+window.submitLogin = submitLogin;
   
     session = { name, email, licence, mode, uploadsComplete: false };
     localStorage.setItem('truerouteSession', JSON.stringify(session)); // ✅ Save to memory
