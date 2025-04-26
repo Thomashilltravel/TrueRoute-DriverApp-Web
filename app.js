@@ -396,17 +396,17 @@ function loadDriverProfile() {
 
     <h3>Uploaded Documents</h3>
     <div style="display:flex;flex-wrap:wrap;gap:10px;">
-      <div><strong>Selfie:</strong><br><img src="selfie_thumbnail_placeholder.jpg" alt="Selfie" style="width:80px;height:80px;border-radius:10px;"></div>
-      <div><strong>Licence Front:</strong><br><img src="licence_front_placeholder.jpg" alt="Licence Front" style="width:80px;"></div>
-      <div><strong>Licence Back:</strong><br><img src="licence_back_placeholder.jpg" alt="Licence Back" style="width:80px;"></div>
-      <div><strong>CPC Front:</strong><br><img src="cpc_front_placeholder.jpg" alt="CPC Front" style="width:80px;"></div>
-      <div><strong>CPC Back:</strong><br><img src="cpc_back_placeholder.jpg" alt="CPC Back" style="width:80px;"></div>
-      <div><strong>Digi Card:</strong><br><img src="digi_card_placeholder.jpg" alt="Digi Card" style="width:80px;"></div>
-      <div><strong>DBS Certificate:</strong><br><img src="dbs_certificate_placeholder.jpg" alt="DBS Certificate" style="width:80px;"></div>
+      <div><strong>Selfie:</strong><br><img id="selfieThumb" alt="Selfie" style="width:80px;height:80px;border-radius:10px;"></div>
+      <div><strong>Licence Front:</strong><br><img id="licenceFrontThumb" alt="Licence Front" style="width:80px;"></div>
+      <div><strong>Licence Back:</strong><br><img id="licenceBackThumb" alt="Licence Back" style="width:80px;"></div>
+      <div><strong>CPC Front:</strong><br><img id="cpcFrontThumb" alt="CPC Front" style="width:80px;"></div>
+      <div><strong>CPC Back:</strong><br><img id="cpcBackThumb" alt="CPC Back" style="width:80px;"></div>
+      <div><strong>Digi Card:</strong><br><img id="digiThumb" alt="Digi Card" style="width:80px;"></div>
+      <div><strong>DBS Certificate:</strong><br><img id="dbsThumb" alt="DBS Certificate" style="width:80px;"></div>
     </div>
 
     <h3>Emergency Contact</h3>
-    <p>Jane Smith – 07890 123456</p>
+    <p id="emergencyContact">Not set yet</p>
 
     <h3>Payslips</h3>
     <ul>
@@ -418,7 +418,30 @@ function loadDriverProfile() {
     <br>
     <button onclick="loadEditProfile()">✏️ Edit Profile</button>
   `;
+
+  // ✅ Now fetch and show actual uploaded images:
+  const files = {
+    selfieThumb: "selfieUpload.jpg",
+    licenceFrontThumb: "licenceFront.jpg",
+    licenceBackThumb: "licenceBack.jpg",
+    cpcFrontThumb: "cpcFront.jpg",
+    cpcBackThumb: "cpcBack.jpg",
+    digiThumb: "digiFront.jpg",
+    dbsThumb: "dbsCertificate.jpg"
+  };
+
+  for (const [elementId, fileName] of Object.entries(files)) {
+    const ref = storage.ref(`uploads/${session.email}/${fileName}`);
+    ref.getDownloadURL()
+      .then(url => {
+        document.getElementById(elementId).src = url;
+      })
+      .catch(error => {
+        console.log(`❌ ${fileName} not found:`, error);
+      });
+  }
 }
+
 
 // ✅ Movement Detection (GPS)
 let vehicleMoving = false;
@@ -427,8 +450,11 @@ function monitorMovement() {
   let lastPos = null;
   navigator.geolocation.watchPosition(pos => {
     if (lastPos) {
-      const moved = Math.abs(pos.coords.latitude - lastPos.latitude) > 0.0002 || Math.abs(pos.coords.longitude - lastPos.longitude) > 0.0002;
-      vehicleMoving = moved;
+      const distanceMoved = Math.sqrt(
+        Math.pow(pos.coords.latitude - lastPos.latitude, 2) +
+        Math.pow(pos.coords.longitude - lastPos.longitude, 2)
+      );
+      vehicleMoving = distanceMoved > 0.0005; // Only if moved more than 0.0005 units
     }
     lastPos = pos.coords;
   }, err => {
