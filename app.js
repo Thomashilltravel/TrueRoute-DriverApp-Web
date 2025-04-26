@@ -398,17 +398,20 @@ function submitPOD() {
 function loadDriverProfile() {
   const emergencyContact = session.emergencyContact || "Not set yet";
 
-  // Set up the better profile layout
   document.getElementById("featureSection").innerHTML = `
     <h2>My Profile</h2>
 
-    <div style="text-align:center;margin-bottom:20px;">
+    <div style="text-align:center; margin-bottom:20px;">
       <img id="selfieThumb" alt="Driver Selfie" style="width:120px;height:150px;object-fit:cover;border-radius:8px;border:2px solid #dac640;">
-      <p><strong>${session.name}</strong><br>${session.email}<br>Licence: ${session.licence}<br>Mode: ${session.mode.toUpperCase()}</p>
     </div>
 
+    <p style="text-align:center;"><strong>${session.name}</strong></p>
+    <p style="text-align:center;">${session.email}</p>
+    <p style="text-align:center;"><strong>Licence:</strong> ${session.licence}</p>
+    <p style="text-align:center;"><strong>Mode:</strong> ${session.mode.toUpperCase()}</p>
+
     <h3>Uploaded Documents</h3>
-    <div style="display:flex;flex-wrap:wrap;gap:10px;">
+    <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;">
       <div><strong>Licence Front:</strong><br><img id="licenceFrontThumb" alt="Licence Front" style="width:80px;"></div>
       <div><strong>Licence Back:</strong><br><img id="licenceBackThumb" alt="Licence Back" style="width:80px;"></div>
       <div><strong>CPC Front:</strong><br><img id="cpcFrontThumb" alt="CPC Front" style="width:80px;"></div>
@@ -418,13 +421,14 @@ function loadDriverProfile() {
     </div>
 
     <br>
+
     <button onclick="uploadNewDBS()">📄 Upload New DBS</button>
 
     <h3>Emergency Contact</h3>
-    <p id="emergencyContact">${emergencyContact}</p>
+    <p style="text-align:center;">${emergencyContact}</p>
 
     <h3>Payslips</h3>
-    <ul>
+    <ul style="text-align:center;">
       <li><a href="#">March 2024</a></li>
       <li><a href="#">February 2024</a></li>
       <li><a href="#">January 2024</a></li>
@@ -432,56 +436,34 @@ function loadDriverProfile() {
 
     <br>
     <button onclick="loadEditProfile()">✏️ Edit Profile</button>
+
+    <footer style="margin-top:30px;">TRUEROUTE – Developed by Thomas Hill Travel</footer>
   `;
 
-  // 🔥 Fetch uploaded images from Firebase Storage
-  const uploadsPath = `uploads/${session.email}/`;
-  const docImages = {
-    selfieUpload: "selfieThumb",
-    licenceFront: "licenceFrontThumb",
-    licenceBack: "licenceBackThumb",
-    cpcFront: "cpcFrontThumb",
-    cpcBack: "cpcBackThumb",
-    digiFront: "digiThumb",
-    dbsCertificate: "dbsThumb"
+  // Load uploaded images from Storage
+  const files = {
+    selfieThumb: "selfieUpload.jpg",
+    licenceFrontThumb: "licenceFront.jpg",
+    licenceBackThumb: "licenceBack.jpg",
+    cpcFrontThumb: "cpcFront.jpg",
+    cpcBackThumb: "cpcBack.jpg",
+    digiThumb: "digiFront.jpg",
+    dbsThumb: "dbsCertificate.jpg"
   };
 
-  for (const [fileName, imgId] of Object.entries(docImages)) {
-    storage.ref(uploadsPath + fileName + ".jpg").getDownloadURL()
+  const uploadsPath = `uploads/${session.email}/`;
+
+  for (const [elementId, fileName] of Object.entries(files)) {
+    const ref = storage.ref(uploadsPath + fileName);
+    ref.getDownloadURL()
       .then(url => {
-        document.getElementById(imgId).src = url;
+        document.getElementById(elementId).src = url;
       })
-      .catch(err => {
-        console.log(`No ${fileName} uploaded yet`, err);
+      .catch(error => {
+        console.log(`❌ ${fileName} not found:`, error);
       });
   }
 }
-
-function uploadNewDBS() {
-  const fileInput = document.createElement("input");
-  fileInput.type = "file";
-  fileInput.accept = "image/*,.pdf";
-
-  fileInput.onchange = async (event) => {  // ✅ NO TYPE ANNOTATION
-    const file = event.target.files[0];
-    if (!file) return;
-
-    const storageRef = storage.ref(`uploads/${session.email}/dbsCertificate.jpg`);
-    try {
-      await storageRef.put(file);
-      alert("✅ New DBS Certificate uploaded!");
-
-      const url = await storageRef.getDownloadURL();
-      document.getElementById("dbsThumb").src = url;
-    } catch (error) {
-      console.error("❌ Error uploading DBS:", error);
-      alert("❌ Error uploading DBS file.");
-    }
-  };
-
-  fileInput.click();
-}
-
 
 function submitDBSUpload() {
   const file = document.getElementById("dbsFile").files[0];
