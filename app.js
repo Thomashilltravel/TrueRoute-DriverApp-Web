@@ -66,6 +66,7 @@ function submitLogin() {
   document.getElementById("loginScreen").style.display = "none";
   document.getElementById("uploadScreen").style.display = "block";
 }
+
 window.submitLogin = submitLogin;
 
 // 🧠 SUBMIT DRIVER DETAILS FUNCTION (new)
@@ -101,6 +102,7 @@ function submitDriverDetails() {
   document.getElementById("loginScreen").style.display = "none";
   document.getElementById("uploadScreen").style.display = "block";
 }
+
 window.submitDriverDetails = submitDriverDetails;
 
 // 🧠 UPLOADS SCREEN FUNCTION (your original code below it)
@@ -136,6 +138,7 @@ function submitUploads() {
   document.getElementById("mainApp").style.display = "block";
   updateMenu();
 }
+
 window.submitUploads = submitUploads;
 
 // ✅ Menu Loader
@@ -228,11 +231,13 @@ function loadDVSAForm() {
     ctx.stroke();
   });
 }
+
 function clearSignature() {
   const canvas = document.getElementById("signature");
   const ctx = canvas.getContext("2d");
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
+
 function submitDVSA() {
   if (!document.getElementById("fitToDrive").checked) {
     alert("Please confirm you are fit to drive.");
@@ -284,10 +289,12 @@ function loadSatNav() {
     <div id="navStatus"></div>
   `;
 }
+
 function startNavigation() {
   const type = document.getElementById("vehicleType").value;
   document.getElementById("navStatus").innerHTML = `🧭 Navigation started for ${type.toUpperCase()}`;
 }
+
 function stopNavigation() {
   document.getElementById("navStatus").innerHTML = `🛑 Navigation stopped`;
 }
@@ -317,6 +324,7 @@ function openIncidentReport() {
     <div id="incidentShareLink"></div>
   `;
 }
+
 function generateIncidentReport() {
   const location = document.getElementById("incidentLocation").value.trim();
   const dateTime = document.getElementById("incidentDateTime").value;
@@ -376,6 +384,7 @@ function loadPODUpload() {
     <div id="podStatus"></div>
   `;
 }
+
 function submitPOD() {
   const file = document.getElementById("podFile").files[0];
   if (!file) {
@@ -448,13 +457,12 @@ function loadDriverProfile() {
   }
 }
 
-
 function uploadNewDBS() {
   const fileInput = document.createElement("input");
   fileInput.type = "file";
-  fileInput.accept = "image/*, .pdf";
+  fileInput.accept = "image/*,.pdf";
 
-  fileInput.onchange = async (event) => {
+  fileInput.onchange = async (event) => {  // ✅ NO TYPE ANNOTATION
     const file = event.target.files[0];
     if (!file) return;
 
@@ -462,84 +470,18 @@ function uploadNewDBS() {
     try {
       await storageRef.put(file);
       alert("✅ New DBS Certificate uploaded!");
+
       const url = await storageRef.getDownloadURL();
       document.getElementById("dbsThumb").src = url;
     } catch (error) {
-      console.error("❌ Error uploading new DBS:", error);
-      alert("Error uploading DBS file.");
+      console.error("❌ Error uploading DBS:", error);
+      alert("❌ Error uploading DBS file.");
     }
   };
 
-  fileInput.click(); // Auto-open file picker
+  fileInput.click();
 }
 
-function loadEditProfile() {
-  document.getElementById("featureSection").innerHTML = `
-    <h2>Edit My Profile</h2>
-
-    <label>Name:</label>
-    <input type="text" id="editName" value="${session.name}">
-
-    <label>Email:</label>
-    <input type="email" id="editEmail" value="${session.email}" disabled>
-
-    <label>Licence Number:</label>
-    <input type="text" id="editLicence" value="${session.licence}">
-
-    <label>Emergency Contact Name:</label>
-    <input type="text" id="emergencyContactName" placeholder="e.g. Jane Smith">
-
-    <label>Emergency Contact Number:</label>
-    <input type="text" id="emergencyContactNumber" placeholder="e.g. 07890 123456">
-
-    <button onclick="saveProfileEdits()">💾 Save Changes</button>
-  `;
-}
-
-function saveProfileEdits() {
-  const newName = document.getElementById("editName").value.trim();
-  const newLicence = document.getElementById("editLicence").value.trim();
-  const emergencyName = document.getElementById("emergencyContactName").value.trim();
-  const emergencyNumber = document.getElementById("emergencyContactNumber").value.trim();
-
-  if (!newName || !newLicence || !emergencyName || !emergencyNumber) {
-    alert("Please complete all fields before saving.");
-    return;
-  }
-
-  // Update the local session memory
-  session.name = newName;
-  session.licence = newLicence;
-  session.emergencyContact = `${emergencyName} – ${emergencyNumber}`;
-
-  localStorage.setItem('truerouteSession', JSON.stringify(session));
-
-  // Update Firestore
-  firestore.collection('drivers').doc(session.email).update({
-    name: newName,
-    licence: newLicence,
-    emergencyContact: session.emergencyContact
-  })
-  .then(() => {
-    console.log("✅ Profile updated in Firestore!");
-    alert("✅ Profile updated successfully!");
-    loadDriverProfile(); // Go back to Profile view
-  })
-  .catch((error) => {
-    console.error("❌ Error updating profile:", error);
-    alert("❌ Failed to update profile. Please try again.");
-  });
-}
-
-function uploadNewDBS() {
-  document.getElementById("featureSection").innerHTML = `
-    <h2>Upload New DBS Certificate</h2>
-
-    <input type="file" id="dbsFile" accept="image/*, .pdf"><br><br>
-    <button onclick="submitDBSUpload()">Upload DBS Certificate</button>
-    <div id="dbsUploadStatus" style="margin-top:15px;"></div>
-  `;
-}
 
 function submitDBSUpload() {
   const file = document.getElementById("dbsFile").files[0];
