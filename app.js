@@ -68,7 +68,57 @@ const featureTemplates = {
     document.getElementById("loginScreen").style.display = "none";
     document.getElementById("uploadScreen").style.display = "block";
 
-  }function submitUploads() {
+  }// Firebase Authentication: Handle Account Creation
+function createAccount() {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  createUserWithEmailAndPassword(auth, email, password)
+    .then(userCredential => {
+      const user = userCredential.user;
+      console.log('Account created:', user);
+    })
+    .catch(error => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.error(`Error ${errorCode}: ${errorMessage}`);
+    });
+}
+
+// Firebase Authentication: Handle Login
+function login() {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  signInWithEmailAndPassword(auth, email, password)
+    .then(userCredential => {
+      const user = userCredential.user;
+      console.log('Logged in:', user);
+      session.email = user.email;
+      localStorage.setItem('truerouteSession', JSON.stringify(session)); // Save session
+    })
+    .catch(error => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.error(`Error ${errorCode}: ${errorMessage}`);
+    });
+}
+
+// Password Reset
+function resetPassword() {
+  const email = document.getElementById("email").value;
+
+  sendPasswordResetEmail(auth, email)
+    .then(() => {
+      alert("Password reset email sent!");
+    })
+    .catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.error(`Error ${errorCode}: ${errorMessage}`);
+    });
+
+}function submitUploads() {
     const requiredFields = [
       "licenceFront", "licenceBack",
       "cpcFront", "cpcBack",
@@ -76,7 +126,46 @@ const featureTemplates = {
       "selfieUpload"
     ];
   
-    for (const fieldId of requiredFields) {
+  }// Update the Dynamic Menu Based on the Driver's Mode
+function updateMenu() {
+  const menu = document.getElementById("menu");
+  const output = document.getElementById("featureSection");
+  menu.innerHTML = "";
+  output.innerHTML = "";
+
+  const always = ["walkaround", "payslips", "messages", "satnav", "compliance", "profile"];
+  const psvOnly = ["passengerCode"];
+  const hgvOnly = ["parcelCode", "podUpload"];
+  const dualOnly = ["passengerCode", "parcelCode", "podUpload"];
+
+  let features = [...always];
+  if (session.mode === "psv") features.push(...psvOnly);
+  if (session.mode === "hgv") features.push(...hgvOnly);
+  if (session.mode === "dual") features.push(...dualOnly);
+
+  features.forEach(feature => {
+    const btn = document.createElement("button");
+    btn.innerText = featureTemplates[feature];
+    btn.onclick = () => {
+      switch (feature) {
+        case "walkaround": loadDVSAForm(); break;
+        case "payslips": loadPayslips(); break;
+        case "messages": loadMessagingPortal(); break;
+        case "satnav": loadSatNav(); break;
+        case "passengerCode": loadPassengerCode(); break;
+        case "parcelCode": loadParcelCode(); break;
+        case "podUpload": loadPODUpload(); break;
+        case "compliance": loadComplianceCenter(); break;
+        case "profile": loadDriverProfile(); break;
+        default:
+          output.innerHTML = `<strong>[${featureTemplates[feature]}]</strong> loaded in <strong>${session.mode.toUpperCase()}</strong> mode.`;
+      }
+    };
+    menu.appendChild(btn);
+  });
+}
+
+   for (const fieldId of requiredFields) {
       if (document.getElementById(fieldId).files.length === 0) {
         alert("Please upload all required files including front and back of each card.");
         return;
@@ -87,46 +176,8 @@ const featureTemplates = {
     document.getElementById("uploadScreen").style.display = "none";
     document.getElementById("mainApp").style.display = "block";
     updateMenu();
-  }
   
-  function updateMenu() {
-    const menu = document.getElementById("menu");
-    const output = document.getElementById("featureSection");
-    menu.innerHTML = "";
-    output.innerHTML = "";
-  
-    const always = ["walkaround", "payslips", "messages", "satnav", "compliance", "profile"];
-    const psvOnly = ["passengerCode"];
-    const hgvOnly = ["parcelCode", "podUpload"];
-    const dualOnly = ["passengerCode", "parcelCode", "podUpload"];
-  
-    let features = [...always];
-    if (session.mode === "psv") features.push(...psvOnly);
-    if (session.mode === "hgv") features.push(...hgvOnly);
-    if (session.mode === "dual") features.push(...dualOnly);
-  
-    features.forEach(feature => {
-      const btn = document.createElement("button");
-      btn.innerText = featureTemplates[feature];
-      btn.onclick = () => {
-        switch (feature) {
-          case "walkaround": loadDVSAForm(); break;
-          case "payslips": loadPayslips(); break;
-          case "messages": loadMessagingPortal(); break;
-          case "satnav": loadSatNav(); break;
-          case "passengerCode": loadPassengerCode(); break;
-          case "parcelCode": loadParcelCode(); break;
-          case "podUpload": loadPODUpload(); break;
-          case "compliance": loadComplianceCenter(); break;
-          case "profile": loadDriverProfile(); break;
-          default:
-            output.innerHTML = `<strong>[${featureTemplates[feature]}]</strong> loaded in <strong>${session.mode.toUpperCase()}</strong> mode.`;
-        }
-      };
-      menu.appendChild(btn);
-    });
-
-  }function loadPassengerCode() {
+    function loadPassengerCode() {
     const passengerCode = Math.random().toString(36).substr(2, 8).toUpperCase();
     document.getElementById("featureSection").innerHTML = `
       <h2>Passenger QR Code Generator</h2>
@@ -457,15 +508,30 @@ window.onload = function() {
   }
   // 🚨 End of the Incident Report System
    
-    function loadDriverProfile() {
-    document.getElementById("featureSection").innerHTML = `
-      <h2>Driver Profile</h2>
-      <p><strong>Name:</strong> ${session.name}</p>
-      <p><strong>Email:</strong> ${session.email}</p>
-      <p><strong>Licence Number:</strong> ${session.licence}</p>
-      <p><strong>Mode:</strong> ${session.mode.toUpperCase()}</p>
-    `;
-  }
+  // Load Driver Profile from Firestore (can store details here)
+function loadDriverProfile() {
+  document.getElementById("featureSection").innerHTML = `
+    <h2>Driver Profile</h2>
+    <p><strong>Name:</strong> ${session.name}</p>
+    <p><strong>Email:</strong> ${session.email}</p>
+    <p><strong>Licence Number:</strong> ${session.licence}</p>
+    <p><strong>Mode:</strong> ${session.mode.toUpperCase()}</p>
+  `;
+
+  // Store profile in Firestore
+  const userRef = firestore.collection('drivers').doc(session.email);
+  userRef.set({
+    name: session.name,
+    email: session.email,
+    licence: session.licence,
+    mode: session.mode
+  }).then(() => {
+    console.log("Driver profile stored in Firestore!");
+  }).catch(error => {
+    console.error("Error storing profile: ", error);
+  });
+}
+
   
   
 

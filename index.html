@@ -34,21 +34,27 @@
       <option value="dual">Dual</option>
     </select>
     <button onclick="submitLogin()">Login</button>
+    <a href="#" id="forgotPasswordLink" onclick="showForgotPasswordScreen()">Forgot Password?</a>
+  </div>
+
+  <!-- Password Recovery Screen (hidden initially) -->
+  <div class="app-container" id="forgotPasswordScreen" style="display:none;">
+    <h2>Recover Your Password</h2>
+    <label for="resetEmail">Enter your email address:</label>
+    <input type="email" id="resetEmail" placeholder="Your Email Address" required><br><br>
+    <button onclick="submitPasswordRecovery()">Send Reset Link</button>
+    <button onclick="hideForgotPasswordScreen()">Cancel</button>
   </div>
 
   <!-- Create Username & Password Screen (visible after initial login) -->
   <div class="app-container" id="setUpCredentialsScreen" style="display:none;">
     <h2>Create Your Login Credentials</h2>
-
-    <!-- Username -->
     <label for="username">Create Username:</label>
     <input type="text" id="username" placeholder="Choose a Username" required><br><br>
 
-    <!-- Password -->
     <label for="password">Create Password:</label>
     <input type="password" id="password" placeholder="Create a Password" required><br><br>
 
-    <!-- Confirm Password -->
     <label for="confirmPassword">Confirm Password:</label>
     <input type="password" id="confirmPassword" placeholder="Confirm your Password" required><br><br>
 
@@ -58,37 +64,30 @@
   <!-- Upload Documents Screen -->
   <div class="app-container" id="uploadScreen" style="display:none;">
     <h2>Upload Your Documents</h2>
-    
-    <!-- Profile Picture -->
     <label for="profilePicture">Upload Profile Picture:</label>
     <input type="file" id="profilePicture" accept="image/*" required><br><br>
 
-    <!-- License Pictures -->
     <label for="licenceFront">Driving Licence - Front:</label>
     <input type="file" accept="image/*,.pdf" id="licenceFront" required><br><br>
 
     <label for="licenceBack">Driving Licence - Back:</label>
     <input type="file" accept="image/*,.pdf" id="licenceBack" required><br><br>
 
-    <!-- CPC Pictures -->
     <label for="cpcFront">CPC Card - Front:</label>
     <input type="file" accept="image/*,.pdf" id="cpcFront" required><br><br>
     
     <label for="cpcBack">CPC Card - Back:</label>
     <input type="file" accept="image/*,.pdf" id="cpcBack" required><br><br>
 
-    <!-- Digi Card Pictures -->
     <label for="digiFront">Digi Card - Front:</label>
     <input type="file" accept="image/*,.pdf" id="digiFront" required><br><br>
     
     <label for="digiBack">Digi Card - Back:</label>
     <input type="file" accept="image/*,.pdf" id="digiBack" required><br><br>
 
-    <!-- Selfie Upload -->
     <label for="selfieUpload">Take a Selfie:</label>
     <input type="file" accept="image/*" capture="user" id="selfieUpload" required><br><br>
 
-    <!-- Submit Button -->
     <button onclick="submitUploads()">Submit Documents</button>
   </div>
 
@@ -112,4 +111,3 @@
   </script>  
 </body>
 </html>
-<
