@@ -1,26 +1,35 @@
 <!DOCTYPE html>
+<!-- 
+  TrueRoute Driver App
+  Developed by Thomas Hill Travel
+  All rights reserved.
+  License: TrueRoute proprietary license
+  Version: 1.0.0 (Alpha)
+  Signature: TH-TR-2025-0425
+-->
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <title>TrueRoute Driver App</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-    
-    <!-- ✅ PWA App Settings -->
-    <link rel="manifest" href="manifest.json">
-    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
-    <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
-    <link rel="apple-touch-icon" href="icon-192.png">
-    <meta name="theme-color" content="#dac640">
+<head>
+  <meta charset="UTF-8">
+  <title>TrueRoute Driver App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
 
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js"></script>
-  </head>
-  
+  <!-- ✅ PWA App Settings -->
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <meta name="theme-color" content="#dac640">
+
+  <!-- ✅ Firebase Scripts (Compat Version) -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
+</head>
+
 <body>
+
   <!-- Driver Login Screen -->
   <div class="app-container" id="loginScreen">
     <h1>Driver Login</h1>
@@ -34,65 +43,40 @@
       <option value="dual">Dual</option>
     </select>
     <button onclick="submitLogin()">Login</button>
-    <a href="#" id="forgotPasswordLink" onclick="showForgotPasswordScreen()">Forgot Password?</a>
-  </div>
-
-  <!-- Password Recovery Screen (hidden initially) -->
-  <div class="app-container" id="forgotPasswordScreen" style="display:none;">
-    <h2>Recover Your Password</h2>
-    <label for="resetEmail">Enter your email address:</label>
-    <input type="email" id="resetEmail" placeholder="Your Email Address" required><br><br>
-    <button onclick="submitPasswordRecovery()">Send Reset Link</button>
-    <button onclick="hideForgotPasswordScreen()">Cancel</button>
-  </div>
-
-  <!-- Create Username & Password Screen (visible after initial login) -->
-  <div class="app-container" id="setUpCredentialsScreen" style="display:none;">
-    <h2>Create Your Login Credentials</h2>
-    <label for="username">Create Username:</label>
-    <input type="text" id="username" placeholder="Choose a Username" required><br><br>
-
-    <label for="password">Create Password:</label>
-    <input type="password" id="password" placeholder="Create a Password" required><br><br>
-
-    <label for="confirmPassword">Confirm Password:</label>
-    <input type="password" id="confirmPassword" placeholder="Confirm your Password" required><br><br>
-
-    <button onclick="submitCredentials()">Save Credentials</button>
+    <!-- Commented out until feature is built -->
+    <!-- <a href="#" id="forgotPasswordLink" onclick="showForgotPasswordScreen()">Forgot Password?</a> -->
   </div>
 
   <!-- Upload Documents Screen -->
   <div class="app-container" id="uploadScreen" style="display:none;">
     <h2>Upload Your Documents</h2>
-    <label for="profilePicture">Upload Profile Picture:</label>
-    <input type="file" id="profilePicture" accept="image/*" required><br><br>
 
     <label for="licenceFront">Driving Licence - Front:</label>
-    <input type="file" accept="image/*,.pdf" id="licenceFront" required><br><br>
+    <input type="file" id="licenceFront" accept="image/*,.pdf" required><br><br>
 
     <label for="licenceBack">Driving Licence - Back:</label>
-    <input type="file" accept="image/*,.pdf" id="licenceBack" required><br><br>
+    <input type="file" id="licenceBack" accept="image/*,.pdf" required><br><br>
 
     <label for="cpcFront">CPC Card - Front:</label>
-    <input type="file" accept="image/*,.pdf" id="cpcFront" required><br><br>
-    
+    <input type="file" id="cpcFront" accept="image/*,.pdf" required><br><br>
+
     <label for="cpcBack">CPC Card - Back:</label>
-    <input type="file" accept="image/*,.pdf" id="cpcBack" required><br><br>
+    <input type="file" id="cpcBack" accept="image/*,.pdf" required><br><br>
 
     <label for="digiFront">Digi Card - Front:</label>
-    <input type="file" accept="image/*,.pdf" id="digiFront" required><br><br>
-    
-    <label for="digiBack">Digi Card - Back:</label>
-    <input type="file" accept="image/*,.pdf" id="digiBack" required><br><br>
+    <input type="file" id="digiFront" accept="image/*,.pdf" required><br><br>
 
-    <label for="selfieUpload">Take a Selfie:</label>
-    <input type="file" accept="image/*" capture="user" id="selfieUpload" required><br><br>
+    <label for="digiBack">Digi Card - Back:</label>
+    <input type="file" id="digiBack" accept="image/*,.pdf" required><br><br>
+
+    <label for="selfieUpload">Selfie:</label>
+    <input type="file" id="selfieUpload" accept="image/*" required><br><br>
 
     <button onclick="submitUploads()">Submit Documents</button>
   </div>
 
   <!-- Main App Screen -->
-  <div class="app-container" id="mainApp" style="display: none;">
+  <div class="app-container" id="mainApp" style="display:none;">
     <h1>TrueRoute Driver App</h1>
     <div id="menu" class="menu"></div>
     <div id="featureSection" class="output"></div>
@@ -101,13 +85,18 @@
     </footer>
   </div>
 
+  <!-- ✅ Your App Code Now Loaded AFTER Firebase -->
   <script src="app.js"></script>
+
+  <!-- ✅ Service Worker registered only if HTTPS -->
   <script>
-    if ('serviceWorker' in navigator) {
+    if (window.location.protocol.startsWith('http') && 'serviceWorker' in navigator) {
       navigator.serviceWorker.register('/service-worker.js')
-      .then(() => console.log('✅ Service Worker Registered!'))
-      .catch(error => console.error('❌ Service Worker Error:', error));
+        .then(() => console.log('✅ Service Worker Registered!'))
+        .catch(error => console.error('❌ Service Worker Error:', error));
     }
-  </script>  
+  </script>
+
 </body>
 </html>
+
