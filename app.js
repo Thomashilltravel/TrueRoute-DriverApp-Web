@@ -388,7 +388,29 @@ function submitPOD() {
 // ✅ Driver Profile
 function loadDriverProfile() {
   const emergencyContact = session.emergencyContact || "Not set yet";
-  document.getElementById("featureSection").innerHTML = `
+  document.getElementById("featureSection").innerHTML =  // 🔥 Auto-load real uploaded images from Firebase Storage
+  const uploadsPath = `uploads/${session.email}/`;
+
+  const docImages = {
+    selfieUpload: "selfieThumb",
+    licenceFront: "licenceFrontThumb",
+    licenceBack: "licenceBackThumb",
+    cpcFront: "cpcFrontThumb",
+    cpcBack: "cpcBackThumb",
+    digiFront: "digiThumb",
+    dbsCertificate: "dbsThumb"
+  };
+
+  for (const [fileName, imgId] of Object.entries(docImages)) {
+    storage.ref(uploadsPath + fileName + ".jpg").getDownloadURL()
+      .then(url => {
+        document.getElementById(imgId).src = url;
+      })
+      .catch(err => {
+        console.log(`No ${fileName} uploaded yet`, err);
+      });
+  }
+ `
     <h2>My Profile</h2>
     <p><strong>Name:</strong> ${session.name}</p>
     <p><strong>Email:</strong> ${session.email}</p>
@@ -405,6 +427,10 @@ function loadDriverProfile() {
       <div><strong>Digi Card:</strong><br><img id="digiThumb" alt="Digi Card" style="width:80px;"></div>
       <div><strong>DBS Certificate:</strong><br><img id="dbsThumb" alt="DBS Certificate" style="width:80px;"></div>
     </div>
+
+    <br>
+
+<button onclick="uploadNewDBS()">📄 Upload New DBS</button>
 
     <h3>Emergency Contact</h3>
 <p id="emergencyContact">${emergencyContact}</p>
@@ -442,6 +468,33 @@ function loadDriverProfile() {
       });
   }
 }
+
+function uploadNewDBS() {
+  const fileInput = document.createElement("input");
+  fileInput.type = "file";
+  fileInput.accept = "image/*,.pdf";
+
+  fileInput.onchange = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const storageRef = storage.ref(`uploads/${session.email}/dbsCertificate.jpg`);
+    try {
+      await storageRef.put(file);
+      alert("✅ New DBS Certificate uploaded!");
+
+      // Refresh the image thumbnail immediately
+      const url = await storageRef.getDownloadURL();
+      document.getElementById("dbsThumb").src = url;
+    } catch (error) {
+      console.error("❌ Error uploading new DBS:", error);
+      alert("Error uploading DBS file.");
+    }
+  };
+
+  fileInput.click(); // Auto-open file picker
+}
+
 
 function loadEditProfile() {
   document.getElementById("featureSection").innerHTML = `
@@ -499,6 +552,48 @@ function saveProfileEdits() {
     console.error("❌ Error updating profile:", error);
     alert("❌ Failed to update profile. Please try again.");
   });
+}
+
+function uploadNewDBS() {
+  document.getElementById("featureSection").innerHTML = `
+    <h2>Upload New DBS Certificate</h2>
+
+    <input type="file" id="dbsFile" accept="image/*, .pdf"><br><br>
+    <button onclick="submitDBSUpload()">Upload DBS Certificate</button>
+    <div id="dbsUploadStatus" style="margin-top:15px;"></div>
+  `;
+}
+
+function submitDBSUpload() {
+  const file = document.getElementById("dbsFile").files[0];
+  const status = document.getElementById("dbsUploadStatus");
+
+  if (!file) {
+    status.innerHTML = "❌ Please select a file to upload.";
+    return;
+  }
+
+  const dbsRef = storage.ref(`uploads/${session.email}/dbsCertificate.${file.name.split('.').pop()}`);
+
+  dbsRef.put(file)
+    .then(snapshot => snapshot.ref.getDownloadURL())
+    .then(url => {
+      console.log("✅ DBS uploaded at:", url);
+
+      // Save DBS URL to Firestore under the driver's profile
+      return firestore.collection('drivers').doc(session.email).update({
+        dbsCertificateUrl: url
+      });
+    })
+    .then(() => {
+      status.innerHTML = "✅ DBS Certificate uploaded and saved successfully!";
+      alert("✅ New DBS uploaded successfully!");
+      loadDriverProfile(); // Return to profile
+    })
+    .catch(error => {
+      console.error("❌ Error uploading DBS:", error);
+      status.innerHTML = "❌ Upload failed. Please try again.";
+    });
 }
 
 
