@@ -144,14 +144,27 @@ function resetPassword() {
     });
 
 }function submitUploads() {
-    const requiredFields = [
-      "licenceFront", "licenceBack",
-      "cpcFront", "cpcBack",
-      "digiFront", "digiBack",
-      "selfieUpload"
-    ];
-  
-  }// Update the Dynamic Menu Based on the Driver's Mode
+  const requiredFields = [
+    "licenceFront", "licenceBack",
+    "cpcFront", "cpcBack",
+    "digiFront", "digiBack",
+    "selfieUpload"
+  ];
+
+  for (const fieldId of requiredFields) {
+    if (document.getElementById(fieldId).files.length === 0) {
+      alert("Please upload all required files including front and back of each card.");
+      return;
+    }
+  }
+
+  session.uploadsComplete = true;
+  document.getElementById("uploadScreen").style.display = "none";
+  document.getElementById("mainApp").style.display = "block";
+  updateMenu();
+}
+
+// Update the Dynamic Menu Based on the Driver's Mode
 function updateMenu() {
   const menu = document.getElementById("menu");
   const output = document.getElementById("featureSection");
