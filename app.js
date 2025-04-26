@@ -40,7 +40,6 @@ const companyInfo = {
 
 const featureTemplates = {
   walkaround: "DVSA Walkaround Check",
-  payslips: "Payslip Viewer",
   messages: "Messaging Portal",
   satnav: "SatNav (Vehicle-Aware)",
   passengerCode: "Passenger Code Generator",
@@ -49,26 +48,6 @@ const featureTemplates = {
   compliance: "Compliance Failsafe Center",
   profile: "My Profile"
 };
-
-function submitDriverDetails() {
-  const name = document.getElementById("driverName").value.trim();
-  const email = document.getElementById("driverEmail").value.trim();
-  const licence = document.getElementById("driverLicence").value.trim();
-  const mode = document.getElementById("modeSelect").value;
-
-  if (!name || !email || !licence) {
-    alert("Please complete all fields.");
-    return;
-  }
-
-  session = { name, email, licence, mode, uploadsComplete: false };
-  localStorage.setItem('truerouteSession', JSON.stringify(session)); // Save
-
-  document.getElementById("loginScreen").style.display = "none";
-  document.getElementById("uploadScreen").style.display = "block";
-}
-window.submitDriverDetails = submitDriverDetails;
-
 
 // ✅ Driver Login
 function submitLogin() {
@@ -159,23 +138,6 @@ function submitUploads() {
 }
 window.submitUploads = submitUploads;
 
-// ✅ Document Upload Screen
-function submitUploads() {
-  const requiredFields = ["licenceFront", "licenceBack", "cpcFront", "cpcBack", "digiFront", "selfieUpload"];
-  for (const fieldId of requiredFields) {
-    if (document.getElementById(fieldId).files.length === 0) {
-      alert("Please upload all required documents.");
-      return;
-    }
-  }
-
-  session.uploadsComplete = true;
-  localStorage.setItem('truerouteSession', JSON.stringify(session));
-  document.getElementById("uploadScreen").style.display = "none";
-  document.getElementById("mainApp").style.display = "block";
-  updateMenu();
-}
-
 // ✅ Menu Loader
 function updateMenu() {
   const menu = document.getElementById("menu");
@@ -183,7 +145,7 @@ function updateMenu() {
   menu.innerHTML = "";
   output.innerHTML = "";
 
-  const always = ["walkaround", "payslips", "messages", "satnav", "compliance", "profile"];
+  const always = ["walkaround", "messages", "satnav", "compliance", "profile"];
   const psvOnly = ["passengerCode"];
   const hgvOnly = ["parcelCode", "podUpload"];
   const dualOnly = ["passengerCode", "parcelCode", "podUpload"];
@@ -199,7 +161,6 @@ function updateMenu() {
     btn.onclick = () => {
       switch (feature) {
         case "walkaround": loadDVSAForm(); break;
-        case "payslips": loadPayslips(); break;
         case "messages": loadMessagingPortal(); break;
         case "satnav": loadSatNav(); break;
         case "passengerCode": loadPassengerCode(); break;
@@ -427,11 +388,35 @@ function submitPOD() {
 // ✅ Driver Profile
 function loadDriverProfile() {
   document.getElementById("featureSection").innerHTML = `
-    <h2>Driver Profile</h2>
+    <h2>My Profile</h2>
     <p><strong>Name:</strong> ${session.name}</p>
     <p><strong>Email:</strong> ${session.email}</p>
-    <p><strong>Licence:</strong> ${session.licence}</p>
+    <p><strong>Licence No:</strong> ${session.licence}</p>
     <p><strong>Mode:</strong> ${session.mode.toUpperCase()}</p>
+
+    <h3>Uploaded Documents</h3>
+    <div style="display:flex;flex-wrap:wrap;gap:10px;">
+      <div><strong>Selfie:</strong><br><img src="selfie_thumbnail_placeholder.jpg" alt="Selfie" style="width:80px;height:80px;border-radius:10px;"></div>
+      <div><strong>Licence Front:</strong><br><img src="licence_front_placeholder.jpg" alt="Licence Front" style="width:80px;"></div>
+      <div><strong>Licence Back:</strong><br><img src="licence_back_placeholder.jpg" alt="Licence Back" style="width:80px;"></div>
+      <div><strong>CPC Front:</strong><br><img src="cpc_front_placeholder.jpg" alt="CPC Front" style="width:80px;"></div>
+      <div><strong>CPC Back:</strong><br><img src="cpc_back_placeholder.jpg" alt="CPC Back" style="width:80px;"></div>
+      <div><strong>Digi Card:</strong><br><img src="digi_card_placeholder.jpg" alt="Digi Card" style="width:80px;"></div>
+      <div><strong>DBS Certificate:</strong><br><img src="dbs_certificate_placeholder.jpg" alt="DBS Certificate" style="width:80px;"></div>
+    </div>
+
+    <h3>Emergency Contact</h3>
+    <p>Jane Smith – 07890 123456</p>
+
+    <h3>Payslips</h3>
+    <ul>
+      <li><a href="#">March 2024</a></li>
+      <li><a href="#">February 2024</a></li>
+      <li><a href="#">January 2024</a></li>
+    </ul>
+
+    <br>
+    <button onclick="loadEditProfile()">✏️ Edit Profile</button>
   `;
 }
 
