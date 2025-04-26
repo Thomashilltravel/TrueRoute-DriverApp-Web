@@ -93,7 +93,9 @@ window.submitLogin = submitLogin;
     document.getElementById("loginScreen").style.display = "none";
     document.getElementById("uploadScreen").style.display = "block";
 
-  }// Firebase Authentication: Handle Account Creation
+  }
+  
+  // Firebase Authentication: Handle Account Creation
 function createAccount() {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
@@ -202,13 +204,6 @@ function updateMenu() {
 } // ✅ CLOSE updateMenu() here safely
 
 
-   for (const fieldId of requiredFields) {
-      if (document.getElementById(fieldId).files.length === 0) {
-        alert("Please upload all required files including front and back of each card.");
-        return;
-      }
-    }
-  
     session.uploadsComplete = true;
     document.getElementById("uploadScreen").style.display = "none";
     document.getElementById("mainApp").style.display = "block";
