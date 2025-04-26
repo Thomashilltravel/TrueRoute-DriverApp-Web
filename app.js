@@ -385,20 +385,21 @@ function submitPOD() {
   document.getElementById("podStatus").innerHTML = `✅ Uploaded: ${file.name}`;
 }
 
-// ✅ Driver Profile
+// ✅ Driver Profile (with Selfie at Top)
 function loadDriverProfile() {
   const emergencyContact = session.emergencyContact || "Not set yet";
 
+  // Set up the better profile layout
   document.getElementById("featureSection").innerHTML = `
     <h2>My Profile</h2>
-    <p><strong>Name:</strong> ${session.name}</p>
-    <p><strong>Email:</strong> ${session.email}</p>
-    <p><strong>Licence No:</strong> ${session.licence}</p>
-    <p><strong>Mode:</strong> ${session.mode.toUpperCase()}</p>
+
+    <div style="text-align:center;margin-bottom:20px;">
+      <img id="selfieThumb" alt="Driver Selfie" style="width:120px;height:150px;object-fit:cover;border-radius:8px;border:2px solid #dac640;">
+      <p><strong>${session.name}</strong><br>${session.email}<br>Licence: ${session.licence}<br>Mode: ${session.mode.toUpperCase()}</p>
+    </div>
 
     <h3>Uploaded Documents</h3>
     <div style="display:flex;flex-wrap:wrap;gap:10px;">
-      <div><strong>Selfie:</strong><br><img id="selfieThumb" alt="Selfie" style="width:80px;height:80px;border-radius:10px;"></div>
       <div><strong>Licence Front:</strong><br><img id="licenceFrontThumb" alt="Licence Front" style="width:80px;"></div>
       <div><strong>Licence Back:</strong><br><img id="licenceBackThumb" alt="Licence Back" style="width:80px;"></div>
       <div><strong>CPC Front:</strong><br><img id="cpcFrontThumb" alt="CPC Front" style="width:80px;"></div>
@@ -426,7 +427,7 @@ function loadDriverProfile() {
 
   // 🔥 Fetch uploaded images from Firebase Storage
   const uploadsPath = `uploads/${session.email}/`;
-  const fileMappings = {
+  const docImages = {
     selfieUpload: "selfieThumb",
     licenceFront: "licenceFrontThumb",
     licenceBack: "licenceBackThumb",
@@ -436,16 +437,17 @@ function loadDriverProfile() {
     dbsCertificate: "dbsThumb"
   };
 
-  for (const [fileName, imgId] of Object.entries(fileMappings)) {
+  for (const [fileName, imgId] of Object.entries(docImages)) {
     storage.ref(uploadsPath + fileName + ".jpg").getDownloadURL()
       .then(url => {
         document.getElementById(imgId).src = url;
       })
-      .catch(error => {
-        console.log(`❌ ${fileName} not found:`, error);
+      .catch(err => {
+        console.log(`No ${fileName} uploaded yet`, err);
       });
   }
 }
+
 
 function uploadNewDBS() {
   const fileInput = document.createElement("input");
