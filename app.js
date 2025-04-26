@@ -129,15 +129,39 @@ function submitUploads() {
   const requiredFields = [
     "licenceFront", "licenceBack",
     "cpcFront", "cpcBack",
-    "digiFront", "digiBack",
-    "selfieUpload"
+    "digiFront", "selfieUpload"
   ];
-  // ... (etc)
+  
+  for (const fieldId of requiredFields) {
+    if (document.getElementById(fieldId).files.length === 0) {
+      alert("Please upload all required files including front and back of each card.");
+      return;
+    }
+  }
+
+  session.uploadsComplete = true;
+  localStorage.setItem('truerouteSession', JSON.stringify(session)); // Update local session
+
+  // 🧠 NEW: Update driver profile in Firestore
+  firestore.collection('drivers').doc(session.email).update({
+    uploadsComplete: true
+  })
+  .then(() => {
+    console.log("✅ Driver upload status updated in Firestore!");
+  })
+  .catch((error) => {
+    console.error("❌ Error updating upload status:", error);
+  });
+
+  document.getElementById("uploadScreen").style.display = "none";
+  document.getElementById("mainApp").style.display = "block";
+  updateMenu();
 }
+window.submitUploads = submitUploads;
 
 // ✅ Document Upload Screen
 function submitUploads() {
-  const requiredFields = ["licenceFront", "licenceBack", "cpcFront", "cpcBack", "digiFront", "digiBack", "selfieUpload"];
+  const requiredFields = ["licenceFront", "licenceBack", "cpcFront", "cpcBack", "digiFront", "selfieUpload"];
   for (const fieldId of requiredFields) {
     if (document.getElementById(fieldId).files.length === 0) {
       alert("Please upload all required documents.");
