@@ -387,6 +387,7 @@ function submitPOD() {
 
 // ✅ Driver Profile
 function loadDriverProfile() {
+  const emergencyContact = session.emergencyContact || "Not set yet";
   document.getElementById("featureSection").innerHTML = `
     <h2>My Profile</h2>
     <p><strong>Name:</strong> ${session.name}</p>
@@ -406,7 +407,7 @@ function loadDriverProfile() {
     </div>
 
     <h3>Emergency Contact</h3>
-    <p id="emergencyContact">Not set yet</p>
+<p id="emergencyContact">${emergencyContact}</p>
 
     <h3>Payslips</h3>
     <ul>
@@ -440,6 +441,64 @@ function loadDriverProfile() {
         console.log(`❌ ${fileName} not found:`, error);
       });
   }
+}
+
+function loadEditProfile() {
+  document.getElementById("featureSection").innerHTML = `
+    <h2>Edit My Profile</h2>
+
+    <label>Name:</label>
+    <input type="text" id="editName" value="${session.name}">
+
+    <label>Email:</label>
+    <input type="email" id="editEmail" value="${session.email}" disabled>
+
+    <label>Licence Number:</label>
+    <input type="text" id="editLicence" value="${session.licence}">
+
+    <label>Emergency Contact Name:</label>
+    <input type="text" id="emergencyContactName" placeholder="e.g. Jane Smith">
+
+    <label>Emergency Contact Number:</label>
+    <input type="text" id="emergencyContactNumber" placeholder="e.g. 07890 123456">
+
+    <button onclick="saveProfileEdits()">💾 Save Changes</button>
+  `;
+}
+
+function saveProfileEdits() {
+  const newName = document.getElementById("editName").value.trim();
+  const newLicence = document.getElementById("editLicence").value.trim();
+  const emergencyName = document.getElementById("emergencyContactName").value.trim();
+  const emergencyNumber = document.getElementById("emergencyContactNumber").value.trim();
+
+  if (!newName || !newLicence || !emergencyName || !emergencyNumber) {
+    alert("Please complete all fields before saving.");
+    return;
+  }
+
+  // Update the local session memory
+  session.name = newName;
+  session.licence = newLicence;
+  session.emergencyContact = `${emergencyName} – ${emergencyNumber}`;
+
+  localStorage.setItem('truerouteSession', JSON.stringify(session));
+
+  // Update Firestore
+  firestore.collection('drivers').doc(session.email).update({
+    name: newName,
+    licence: newLicence,
+    emergencyContact: session.emergencyContact
+  })
+  .then(() => {
+    console.log("✅ Profile updated in Firestore!");
+    alert("✅ Profile updated successfully!");
+    loadDriverProfile(); // Go back to Profile view
+  })
+  .catch((error) => {
+    console.error("❌ Error updating profile:", error);
+    alert("❌ Failed to update profile. Please try again.");
+  });
 }
 
 
