@@ -52,6 +52,30 @@ const featureTemplates = {
   profile: "My Profile"
 };
 
+// ✅ NEW: Vehicle Movement Sensing
+let isVehicleMoving = false;
+
+// ✅ Start Monitoring Vehicle Movement
+function monitorMovement() {
+  if ("geolocation" in navigator) {
+    navigator.geolocation.watchPosition(position => {
+      const speed = position.coords.speed; // Speed is in meters per second
+      if (speed !== null && speed > 0.5) { // 0.5 m/s ~ 1.1 mph
+        isVehicleMoving = true;
+      } else {
+        isVehicleMoving = false;
+      }
+    }, error => {
+      console.error("Geolocation error:", error);
+    }, {
+      enableHighAccuracy: true,
+      maximumAge: 1000
+    });
+  } else {
+    console.error("Geolocation not available.");
+  }
+}
+
 // ✅ Get Drivers Function (testing purpose)
 async function getDrivers() {
   const driversRef = firestore.collection('drivers');
@@ -197,10 +221,79 @@ function submitPOD() {
 
 function loadComplianceCenter() {
   document.getElementById("featureSection").innerHTML = `
-    <h2>Compliance Center</h2>
-    <p>Status: All systems normal ✅</p>
+    <h2>Compliance Failsafe Center</h2>
+    <p><strong>Status:</strong> All systems normal ✅</p>
+    <ul>
+      <li>✔️ DVSA Walkaround Check submitted (Recent: <em>Yes</em>)</li>
+      <li>✔️ Licence Documents Uploaded (Front/Back Valid)</li>
+      <li>✔️ CPC and Digi Card Verified</li>
+      <li>🕐 Driving Hours: <em>Within Legal Limit</em></li>
+      <li>📈 Tachograph Sync: <em>Up to Date</em></li>
+      <li>✅ Emergency Contact Registered</li>
+    </ul>
+    <button onclick="openIncidentReport()">Report an Incident (RTA)</button>
+    <p><em>In future versions: live tacho alerts, working time warnings, and accident auto-logging!</em></p>
   `;
 }
+
+function loadDVSAForm() {
+  const checklistItems = [
+    "Step/handrails secure and functioning",
+    "AdBlue level sufficient",
+    "No air leaks detected",
+    "Battery secure, terminals clean",
+    "Bodywork no sharp edges or damage",
+    "Brakes operational",
+    "Mirrors clean and adjusted",
+    "Lights and indicators working",
+    "Seats and seatbelts secure",
+    "Emergency exits functional",
+    "First aid kit present and in-date",
+    "Fire extinguisher present and in-date",
+    "Fuel level sufficient",
+    "Horn operational",
+    "Number plates clean and readable"
+  ];
+
+  const checks = checklistItems.map((item, i) => `
+    <label>${item}</label>
+    <div class="check-options">
+      <input type="radio" name="check${i}" value="pass" required> Pass
+      <input type="radio" name="check${i}" value="na"> N/A
+      <input type="radio" name="check${i}" value="fail"> Fail
+      <input type="file" id="photo${i}" style="display:none;" accept="image/*">
+    </div>
+  `).join("");
+
+  document.getElementById("featureSection").innerHTML = `
+    <h2>DVSA Daily Walkaround Check</h2>
+    <label>Vehicle Registration:</label><br>
+    <input type="text" id="vehicleReg" required><br><br>
+
+    <label>Odometer Reading (Miles):</label><br>
+    <input type="number" id="odometer" required><br><br>
+
+    ${checks}
+
+    <label><input type="checkbox" id="fitToDrive"> I confirm I am fit to drive</label><br><br>
+
+    <h3>Signature:</h3>
+    <canvas id="signature" width="300" height="100" style="border:1px solid black;"></canvas><br>
+    <button onclick="clearSignature()">Clear Signature</button><br><br>
+
+    <button onclick="submitDVSA()">Submit Walkaround Check</button>
+  `;
+
+  // Auto show file upload if "Fail" is clicked
+  document.querySelectorAll('input[type=radio]').forEach(radio => {
+    radio.addEventListener('change', (e) => {
+      const index = e.target.name.replace('check', '');
+      const photo = document.getElementById('photo' + index);
+      photo.style.display = e.target.value === "fail" ? "block" : "none";
+    });
+  });
+}
+
 
 function loadPayslips() {
   document.getElementById("featureSection").innerHTML = `
@@ -224,32 +317,53 @@ function loadMessagingPortal() {
 
 function sendMessage() {
   const input = document.getElementById("messageInput");
+  const logList = document.getElementById("logList");
+
+  if (isVehicleMoving) {
+    alert("⚠️ You cannot send messages while the vehicle is moving.");
+    return;
+  }
+
   const msg = input.value.trim();
-  if (!msg) return alert("Type a message first.");
-  const history = document.getElementById("messageHistory");
-  const time = new Date().toLocaleTimeString();
-  history.innerHTML += `<div>📨 ${time}: ${msg}</div>`;
+  if (!msg) {
+    alert("Please type a message first.");
+    return;
+  }
+
+  const li = document.createElement("li");
+  li.textContent = `📨 ${new Date().toLocaleTimeString()}: ${msg}`;
+  logList.prepend(li);
   input.value = "";
 }
 
 function loadSatNav() {
   document.getElementById("featureSection").innerHTML = `
-    <h2>SatNav (Simulated)</h2>
+    <h2>Vehicle-Aware SatNav</h2>
+    <label>Select vehicle type:</label>
     <select id="vehicleType">
-      <option value="coach">Coach</option>
-      <option value="lorry">HGV</option>
+      <option value="coach">Coach / PSV</option>
+      <option value="lorry">HGV / Lorry</option>
       <option value="van">Van</option>
-    </select>
+    </select><br><br>
+
     <button onclick="startNavigation()">Start Navigation</button>
+    <button onclick="stopNavigation()" style="margin-left:10px;">Stop Navigation</button>
+
+    <div id="navStatus" style="margin-top: 20px;"></div>
   `;
 }
 
 function startNavigation() {
   const type = document.getElementById("vehicleType").value;
-  document.getElementById("featureSection").innerHTML += `
-    <p>🧭 Navigating as ${type.toUpperCase()} (simulated)</p>
-  `;
+  const navStatus = document.getElementById("navStatus");
+  navStatus.innerHTML = `🧭 Navigation started for <strong>${type.toUpperCase()}</strong>. (Mock active)`;
 }
+
+function stopNavigation() {
+  const navStatus = document.getElementById("navStatus");
+  navStatus.innerHTML = `<strong>🛑 Navigation stopped.</strong>`;
+}
+
 
 function loadDriverProfile() {
   document.getElementById("featureSection").innerHTML = `
@@ -271,6 +385,7 @@ window.onload = () => {
       document.getElementById("uploadScreen").style.display = "none";
       document.getElementById("mainApp").style.display = "block";
       updateMenu();
+      monitorMovement();
     } else {
       document.getElementById("loginScreen").style.display = "none";
       document.getElementById("uploadScreen").style.display = "block";
