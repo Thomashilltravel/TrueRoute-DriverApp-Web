@@ -7,7 +7,7 @@
  * Signature: TH-TR-2025-0425
 */
 
-// ✅ Firebase App & Services
+// ✅ Initialize Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyCVJqDnJVCBgimKAZOnb9NIMWN92fbaCtQ",
   authDomain: "trueroute-7cd95.firebaseapp.com",
@@ -16,13 +16,13 @@ const firebaseConfig = {
   messagingSenderId: "1076186848093",
   appId: "1:1076186848093:web:aaeabcf3d98f4c413fe6b4"
 };
-
 firebase.initializeApp(firebaseConfig);
+
 const firestore = firebase.firestore();
 const auth = firebase.auth();
 const storage = firebase.storage();
 
-// ✅ Session memory
+// ✅ Session Memory
 let session = {
   name: '',
   email: '',
@@ -31,7 +31,6 @@ let session = {
   uploadsComplete: false
 };
 
-// ✅ Static Company Info
 const companyInfo = {
   companyName: "Thomas Hill Travel",
   contactNumber: "+44 1234 567890",
@@ -39,7 +38,6 @@ const companyInfo = {
   insurancePolicy: "TH-INS-2025-001"
 };
 
-// ✅ Feature Templates
 const featureTemplates = {
   walkaround: "DVSA Walkaround Check",
   payslips: "Payslip Viewer",
@@ -52,49 +50,7 @@ const featureTemplates = {
   profile: "My Profile"
 };
 
-// ✅ NEW: Vehicle Movement Sensing
-let isVehicleMoving = false;
-
-// ✅ Start Monitoring Vehicle Movement
-function monitorMovement() {
-  if ("geolocation" in navigator) {
-    navigator.geolocation.watchPosition(position => {
-      const speed = position.coords.speed; // Speed is in meters per second
-      if (speed !== null && speed > 0.5) { // 0.5 m/s ~ 1.1 mph
-        isVehicleMoving = true;
-      } else {
-        isVehicleMoving = false;
-      }
-    }, error => {
-      console.error("Geolocation error:", error);
-    }, {
-      enableHighAccuracy: true,
-      maximumAge: 1000
-    });
-  } else {
-    console.error("Geolocation not available.");
-  }
-}
-
-// ✅ Get Drivers Function (testing purpose)
-async function getDrivers() {
-  const driversRef = firestore.collection('drivers');
-  try {
-    const querySnapshot = await driversRef
-      .where('mode', '==', 'PSV')
-      .where('uploadsComplete', '==', true)
-      .orderBy('name')
-      .get();
-    querySnapshot.forEach(doc => {
-      console.log(doc.id, " => ", doc.data());
-    });
-  } catch (error) {
-    console.error("Error fetching documents:", error);
-  }
-}
-getDrivers();
-
-// ✅ Submit Login
+// ✅ Driver Login
 function submitLogin() {
   const name = document.getElementById("driverName").value.trim();
   const email = document.getElementById("driverEmail").value.trim();
@@ -108,38 +64,29 @@ function submitLogin() {
 
   session = { name, email, licence, mode, uploadsComplete: false };
   localStorage.setItem('truerouteSession', JSON.stringify(session));
-
   document.getElementById("loginScreen").style.display = "none";
   document.getElementById("uploadScreen").style.display = "block";
 }
 window.submitLogin = submitLogin;
 
-// ✅ Upload Documents
+// ✅ Document Upload Screen
 function submitUploads() {
-  const requiredFields = [
-    "licenceFront", "licenceBack",
-    "cpcFront", "cpcBack",
-    "digiFront", "digiBack",
-    "selfieUpload"
-  ];
-
+  const requiredFields = ["licenceFront", "licenceBack", "cpcFront", "cpcBack", "digiFront", "digiBack", "selfieUpload"];
   for (const fieldId of requiredFields) {
     if (document.getElementById(fieldId).files.length === 0) {
-      alert("Please upload all required files including front and back of each card.");
+      alert("Please upload all required documents.");
       return;
     }
   }
 
   session.uploadsComplete = true;
   localStorage.setItem('truerouteSession', JSON.stringify(session));
-
   document.getElementById("uploadScreen").style.display = "none";
   document.getElementById("mainApp").style.display = "block";
   updateMenu();
 }
-window.submitUploads = submitUploads;
 
-// ✅ Update Driver Menu
+// ✅ Menu Loader
 function updateMenu() {
   const menu = document.getElementById("menu");
   const output = document.getElementById("featureSection");
@@ -159,238 +106,275 @@ function updateMenu() {
   features.forEach(feature => {
     const btn = document.createElement("button");
     btn.innerText = featureTemplates[feature];
-    btn.onclick = () => loadFeature(feature);
+    btn.onclick = () => {
+      switch (feature) {
+        case "walkaround": loadDVSAForm(); break;
+        case "payslips": loadPayslips(); break;
+        case "messages": loadMessagingPortal(); break;
+        case "satnav": loadSatNav(); break;
+        case "passengerCode": loadPassengerCode(); break;
+        case "parcelCode": loadParcelCode(); break;
+        case "podUpload": loadPODUpload(); break;
+        case "compliance": loadComplianceCenter(); break;
+        case "profile": loadDriverProfile(); break;
+      }
+    };
     menu.appendChild(btn);
   });
 }
 
-// ✅ Load Individual Features
-function loadFeature(feature) {
-  const output = document.getElementById("featureSection");
-  switch (feature) {
-    case "walkaround": loadDVSAForm(); break;
-    case "payslips": loadPayslips(); break;
-    case "messages": loadMessagingPortal(); break;
-    case "satnav": loadSatNav(); break;
-    case "passengerCode": loadPassengerCode(); break;
-    case "parcelCode": loadParcelCode(); break;
-    case "podUpload": loadPODUpload(); break;
-    case "compliance": loadComplianceCenter(); break;
-    case "profile": loadDriverProfile(); break;
-    default:
-      output.innerHTML = `<strong>[${featureTemplates[feature]}]</strong> loaded in <strong>${session.mode.toUpperCase()}</strong> mode.`;
-  }
-}
-
-// ✅ Individual Feature Loaders (Same as your code - no syntax errors)
-
-function loadPassengerCode() {
-  const passengerCode = Math.random().toString(36).substr(2, 8).toUpperCase();
-  document.getElementById("featureSection").innerHTML = `
-    <h2>Passenger QR Code Generator</h2>
-    <div style="font-size:24px;font-weight:bold;">${passengerCode}</div>
-  `;
-}
-
-function loadParcelCode() {
-  const parcelCode = "PCL-" + Math.random().toString(36).substr(2, 6).toUpperCase();
-  document.getElementById("featureSection").innerHTML = `
-    <h2>Parcel Code Generator</h2>
-    <div style="font-size:24px;font-weight:bold;">${parcelCode}</div>
-  `;
-}
-
-function loadPODUpload() {
-  document.getElementById("featureSection").innerHTML = `
-    <h2>Proof of Delivery Upload</h2>
-    <input type="file" id="podFile" accept="image/*,.pdf">
-    <button onclick="submitPOD()">Submit POD</button>
-    <div id="podStatus"></div>
-  `;
-}
-
-function submitPOD() {
-  const file = document.getElementById("podFile").files[0];
-  const status = document.getElementById("podStatus");
-  if (!file) {
-    status.innerHTML = `❌ Please select a file.`;
-    return;
-  }
-  status.innerHTML = `✅ POD "${file.name}" uploaded (simulated).`;
-}
-
-function loadComplianceCenter() {
-  document.getElementById("featureSection").innerHTML = `
-    <h2>Compliance Failsafe Center</h2>
-    <p><strong>Status:</strong> All systems normal ✅</p>
-    <ul>
-      <li>✔️ DVSA Walkaround Check submitted (Recent: <em>Yes</em>)</li>
-      <li>✔️ Licence Documents Uploaded (Front/Back Valid)</li>
-      <li>✔️ CPC and Digi Card Verified</li>
-      <li>🕐 Driving Hours: <em>Within Legal Limit</em></li>
-      <li>📈 Tachograph Sync: <em>Up to Date</em></li>
-      <li>✅ Emergency Contact Registered</li>
-    </ul>
-    <button onclick="openIncidentReport()">Report an Incident (RTA)</button>
-    <p><em>In future versions: live tacho alerts, working time warnings, and accident auto-logging!</em></p>
-  `;
-}
-
+// ✅ DVSA Walkaround
 function loadDVSAForm() {
   const checklistItems = [
-    "Step/handrails secure and functioning",
-    "AdBlue level sufficient",
-    "No air leaks detected",
-    "Battery secure, terminals clean",
-    "Bodywork no sharp edges or damage",
-    "Brakes operational",
-    "Mirrors clean and adjusted",
-    "Lights and indicators working",
-    "Seats and seatbelts secure",
-    "Emergency exits functional",
-    "First aid kit present and in-date",
-    "Fire extinguisher present and in-date",
-    "Fuel level sufficient",
-    "Horn operational",
-    "Number plates clean and readable"
+    "Access Equipment", "AdBlue", "Air Build-Up", "Battery", "Bodywork",
+    "Brakes", "Cleanliness", "Coupling", "Dashboard Warning Lights",
+    "Doors", "Driver's Seat", "Emergency Exits", "Exhaust System",
+    "Fire Extinguishers", "First Aid Kit", "Flooring", "Fuel Level",
+    "Horn", "Lights", "Load Security", "Mirrors", "Number Plates",
+    "Oil Level", "Seatbelts", "Seats"
   ];
 
-  const checks = checklistItems.map((item, i) => `
+  const section = checklistItems.map((item, i) => `
     <label>${item}</label>
     <div class="check-options">
-      <input type="radio" name="check${i}" value="pass" required> Pass
-      <input type="radio" name="check${i}" value="na"> N/A
-      <input type="radio" name="check${i}" value="fail"> Fail
-      <input type="file" id="photo${i}" style="display:none;" accept="image/*">
+      <input type="radio" name="item${i}" value="pass"> Pass
+      <input type="radio" name="item${i}" value="na"> N/A
+      <input type="radio" name="item${i}" value="fail"> Fail
+      <input type="file" id="upload${i}" style="display:none;">
     </div>
   `).join("");
 
   document.getElementById("featureSection").innerHTML = `
-    <h2>DVSA Daily Walkaround Check</h2>
-    <label>Vehicle Registration:</label><br>
-    <input type="text" id="vehicleReg" required><br><br>
-
-    <label>Odometer Reading (Miles):</label><br>
-    <input type="number" id="odometer" required><br><br>
-
-    ${checks}
-
-    <label><input type="checkbox" id="fitToDrive"> I confirm I am fit to drive</label><br><br>
-
+    <h2>DVSA Walkaround Check</h2>
+    <input type="text" id="vehicleReg" placeholder="Vehicle Registration">
+    <input type="number" id="odometer" placeholder="Odometer Reading (miles)">
+    ${section}
+    <label><input type="checkbox" id="fitToDrive"> Confirm fit to drive</label>
     <h3>Signature:</h3>
-    <canvas id="signature" width="300" height="100" style="border:1px solid black;"></canvas><br>
+    <canvas id="signature" width="300" height="100" style="border:1px solid #ccc;"></canvas><br>
     <button onclick="clearSignature()">Clear Signature</button><br><br>
-
-    <button onclick="submitDVSA()">Submit Walkaround Check</button>
+    <button onclick="submitDVSA()">Submit Walkaround</button>
   `;
 
-  // Auto show file upload if "Fail" is clicked
-  document.querySelectorAll('input[type=radio]').forEach(radio => {
-    radio.addEventListener('change', (e) => {
-      const index = e.target.name.replace('check', '');
-      const photo = document.getElementById('photo' + index);
-      photo.style.display = e.target.value === "fail" ? "block" : "none";
+  const radios = document.querySelectorAll("input[type='radio']");
+  radios.forEach(r => {
+    r.addEventListener("change", e => {
+      const name = e.target.name;
+      const index = name.replace("item", "");
+      const upload = document.getElementById("upload" + index);
+      upload.style.display = e.target.value === "fail" ? "block" : "none";
     });
   });
+
+  const canvas = document.getElementById("signature");
+  const ctx = canvas.getContext("2d");
+  let drawing = false;
+  canvas.addEventListener("mousedown", () => drawing = true);
+  canvas.addEventListener("mouseup", () => drawing = false);
+  canvas.addEventListener("mousemove", e => {
+    if (!drawing) return;
+    ctx.lineTo(e.offsetX, e.offsetY);
+    ctx.stroke();
+  });
+}
+function clearSignature() {
+  const canvas = document.getElementById("signature");
+  const ctx = canvas.getContext("2d");
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+function submitDVSA() {
+  if (!document.getElementById("fitToDrive").checked) {
+    alert("Please confirm you are fit to drive.");
+    return;
+  }
+  alert("✅ DVSA Walkaround Submitted!");
+  updateMenu();
 }
 
-
-function loadPayslips() {
-  document.getElementById("featureSection").innerHTML = `
-    <h2>Your Payslips</h2>
-    <ul>
-      <li><a href="#">Payslip - March</a></li>
-      <li><a href="#">Payslip - February</a></li>
-      <li><a href="#">Payslip - January</a></li>
-    </ul>
-  `;
-}
-
+// ✅ Messaging Portal
 function loadMessagingPortal() {
   document.getElementById("featureSection").innerHTML = `
     <h2>Messaging Portal</h2>
-    <textarea id="messageInput" placeholder="Type message"></textarea>
-    <button onclick="sendMessage()">Send</button>
-    <div id="messageHistory"></div>
+    <textarea id="messageInput" placeholder="Type your message..." rows="4"></textarea>
+    <button onclick="sendMessage()">Send Message</button>
+    <div id="messageHistory" style="margin-top:20px;"><ul id="logList"></ul></div>
   `;
 }
 
 function sendMessage() {
   const input = document.getElementById("messageInput");
-  const logList = document.getElementById("logList");
-
-  if (isVehicleMoving) {
-    alert("⚠️ You cannot send messages while the vehicle is moving.");
-    return;
-  }
-
   const msg = input.value.trim();
   if (!msg) {
-    alert("Please type a message first.");
+    alert("Please type a message.");
     return;
   }
-
+  if (vehicleMoving) {
+    alert("Cannot send message while vehicle is moving!");
+    return;
+  }
+  const logList = document.getElementById("logList");
   const li = document.createElement("li");
   li.textContent = `📨 ${new Date().toLocaleTimeString()}: ${msg}`;
   logList.prepend(li);
   input.value = "";
 }
 
+// ✅ SatNav
 function loadSatNav() {
   document.getElementById("featureSection").innerHTML = `
     <h2>Vehicle-Aware SatNav</h2>
-    <label>Select vehicle type:</label>
     <select id="vehicleType">
-      <option value="coach">Coach / PSV</option>
-      <option value="lorry">HGV / Lorry</option>
+      <option value="coach">Coach</option>
+      <option value="lorry">Lorry</option>
       <option value="van">Van</option>
     </select><br><br>
-
     <button onclick="startNavigation()">Start Navigation</button>
-    <button onclick="stopNavigation()" style="margin-left:10px;">Stop Navigation</button>
+    <button onclick="stopNavigation()">Stop Navigation</button>
+    <div id="navStatus"></div>
+  `;
+}
+function startNavigation() {
+  const type = document.getElementById("vehicleType").value;
+  document.getElementById("navStatus").innerHTML = `🧭 Navigation started for ${type.toUpperCase()}`;
+}
+function stopNavigation() {
+  document.getElementById("navStatus").innerHTML = `🛑 Navigation stopped`;
+}
 
-    <div id="navStatus" style="margin-top: 20px;"></div>
+// ✅ Compliance Center
+function loadComplianceCenter() {
+  document.getElementById("featureSection").innerHTML = `
+    <h2>Compliance Failsafe Center</h2>
+    <ul>
+      <li>Walkaround Check: ✅</li>
+      <li>Licence Documents: ✅</li>
+      <li>Tachograph: ✅</li>
+      <li>Working Time: ✅</li>
+    </ul>
+    <button onclick="openIncidentReport()">Report Road Traffic Accident</button>
   `;
 }
 
-function startNavigation() {
-  const type = document.getElementById("vehicleType").value;
-  const navStatus = document.getElementById("navStatus");
-  navStatus.innerHTML = `🧭 Navigation started for <strong>${type.toUpperCase()}</strong>. (Mock active)`;
+// ✅ Incident Report
+function openIncidentReport() {
+  document.getElementById("featureSection").innerHTML = `
+    <h2>Incident Report (Road Traffic Accident)</h2>
+    <input type="text" id="incidentLocation" placeholder="Accident Location"><br><br>
+    <input type="datetime-local" id="incidentDateTime"><br><br>
+    <textarea id="incidentDescription" rows="4" placeholder="Describe what happened..."></textarea><br><br>
+    <button onclick="generateIncidentReport()">Generate Shareable Report</button>
+    <div id="incidentShareLink"></div>
+  `;
+}
+function generateIncidentReport() {
+  const location = document.getElementById("incidentLocation").value.trim();
+  const dateTime = document.getElementById("incidentDateTime").value;
+  const description = document.getElementById("incidentDescription").value.trim();
+
+  if (!location || !dateTime || !description) {
+    alert("Please fill in all required fields!");
+    return;
+  }
+
+  const reportText = `
+🚗 Road Traffic Accident Report
+🗓️ Date/Time: ${new Date(dateTime).toLocaleString()}
+📍 Location: ${location}
+📝 Description:
+${description}
+
+Company: ${companyInfo.companyName}
+Contact: ${companyInfo.contactNumber}
+Insurance: ${companyInfo.insuranceProvider}
+Policy: ${companyInfo.insurancePolicy}
+  `.trim();
+
+  const encoded = encodeURIComponent(reportText);
+  const shareLink = `https://wa.me/?text=${encoded}`;
+
+  document.getElementById("incidentShareLink").innerHTML = `
+    <p><strong>Ready to Send:</strong></p>
+    <a href="${shareLink}" target="_blank">📤 Share via WhatsApp</a>
+  `;
 }
 
-function stopNavigation() {
-  const navStatus = document.getElementById("navStatus");
-  navStatus.innerHTML = `<strong>🛑 Navigation stopped.</strong>`;
+// ✅ Passenger Code
+function loadPassengerCode() {
+  const code = Math.random().toString(36).substr(2, 8).toUpperCase();
+  document.getElementById("featureSection").innerHTML = `
+    <h2>Passenger QR Code Generator</h2>
+    <div style="font-size:24px;font-weight:bold;">${code}</div>
+  `;
 }
 
+// ✅ Parcel Code
+function loadParcelCode() {
+  const code = "PCL-" + Math.random().toString(36).substr(2, 6).toUpperCase();
+  document.getElementById("featureSection").innerHTML = `
+    <h2>Parcel QR Code Generator</h2>
+    <div style="font-size:24px;font-weight:bold;">${code}</div>
+  `;
+}
 
+// ✅ Proof of Delivery
+function loadPODUpload() {
+  document.getElementById("featureSection").innerHTML = `
+    <h2>Proof of Delivery (POD) Upload</h2>
+    <input type="file" id="podFile" accept="image/*, .pdf"><br><br>
+    <button onclick="submitPOD()">Submit POD</button>
+    <div id="podStatus"></div>
+  `;
+}
+function submitPOD() {
+  const file = document.getElementById("podFile").files[0];
+  if (!file) {
+    document.getElementById("podStatus").innerHTML = "❌ No file selected.";
+    return;
+  }
+  document.getElementById("podStatus").innerHTML = `✅ Uploaded: ${file.name}`;
+}
+
+// ✅ Driver Profile
 function loadDriverProfile() {
   document.getElementById("featureSection").innerHTML = `
     <h2>Driver Profile</h2>
-    <p>Name: ${session.name}</p>
-    <p>Email: ${session.email}</p>
-    <p>Licence: ${session.licence}</p>
-    <p>Mode: ${session.mode.toUpperCase()}</p>
+    <p><strong>Name:</strong> ${session.name}</p>
+    <p><strong>Email:</strong> ${session.email}</p>
+    <p><strong>Licence:</strong> ${session.licence}</p>
+    <p><strong>Mode:</strong> ${session.mode.toUpperCase()}</p>
   `;
 }
 
-// ✅ Auto-Reload Session
-window.onload = () => {
-  const saved = localStorage.getItem('truerouteSession');
-  if (saved) {
-    session = JSON.parse(saved);
+// ✅ Movement Detection (GPS)
+let vehicleMoving = false;
+function monitorMovement() {
+  if (!navigator.geolocation) return;
+  let lastPos = null;
+  navigator.geolocation.watchPosition(pos => {
+    if (lastPos) {
+      const moved = Math.abs(pos.coords.latitude - lastPos.latitude) > 0.0002 || Math.abs(pos.coords.longitude - lastPos.longitude) > 0.0002;
+      vehicleMoving = moved;
+    }
+    lastPos = pos.coords;
+  }, err => {
+    console.warn("GPS Error:", err);
+  }, { enableHighAccuracy: true });
+}
+
+// ✅ On Page Load
+window.onload = function() {
+  const savedSession = localStorage.getItem('truerouteSession');
+  if (savedSession) {
+    session = JSON.parse(savedSession);
     if (session.uploadsComplete) {
       document.getElementById("loginScreen").style.display = "none";
       document.getElementById("uploadScreen").style.display = "none";
       document.getElementById("mainApp").style.display = "block";
       updateMenu();
-      monitorMovement();
     } else {
       document.getElementById("loginScreen").style.display = "none";
       document.getElementById("uploadScreen").style.display = "block";
     }
   }
+  monitorMovement();
 };
-
- 
