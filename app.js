@@ -7,19 +7,7 @@
  * Signature: TH-TR-2025-0425
 */
 
-
-// Import the necessary Firebase functions
-import { initializeApp } from "firebase/app";
-import { 
-  getFirestore, collection, query, where, getDocs, orderBy, setDoc, doc 
-} from "firebase/firestore";
-import { 
-  getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail 
-} from "firebase/auth";
-import { getStorage } from "firebase/storage";
-
-
-// Your Firebase configuration (use the API key you provided)
+// Initialize Firebase (already loaded via <script> in index.html)
 const firebaseConfig = {
   apiKey: "AIzaSyCVJqDnJVCBgimKAZOnb9NIMWN92fbaCtQ",
   authDomain: "trueroute-7cd95.firebaseapp.com",
@@ -29,25 +17,21 @@ const firebaseConfig = {
   appId: "1:1076186848093:web:aaeabcf3d98f4c413fe6b4"
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
+firebase.initializeApp(firebaseConfig);
 
-// Initialize Firestore, Auth, and Storage services
-const firestore = getFirestore(app);
-const auth = getAuth(app);
-const storage = getStorage(app);
+const firestore = firebase.firestore();
+const auth = firebase.auth();
+const storage = firebase.storage();
 
-// 2. Query Function - Put this after the Firebase initialization
+// ✅ Query Function
 async function getDrivers() {
-  const driversRef = collection(firestore, 'drivers');
-  const q = query(driversRef,
-    where('mode', '==', 'PSV'),
-    where('uploadsComplete', '==', true),
-    orderBy('name')
-  );
+  const driversRef = firestore.collection('drivers');
+  const q = driversRef.where('mode', '==', 'PSV')
+                       .where('uploadsComplete', '==', true)
+                       .orderBy('name');
 
   try {
-    const querySnapshot = await getDocs(q);
+    const querySnapshot = await q.get();
     querySnapshot.forEach(doc => {
       console.log(doc.id, " => ", doc.data()); // Log each driver's data
     });
@@ -56,8 +40,9 @@ async function getDrivers() {
   }
 }
 
-// 3. Call the function after Firebase setup - Place this at the bottom or on an event
+// ✅ Call the function after Firebase setup
 getDrivers();
+
 
 const featureTemplates = {
     walkaround: "DVSA Walkaround Check",
