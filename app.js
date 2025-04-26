@@ -388,29 +388,8 @@ function submitPOD() {
 // ✅ Driver Profile
 function loadDriverProfile() {
   const emergencyContact = session.emergencyContact || "Not set yet";
-  document.getElementById("featureSection").innerHTML =  // 🔥 Auto-load real uploaded images from Firebase Storage
-  const uploadsPath = `uploads/${session.email}/`;
 
-  const docImages = {
-    selfieUpload: "selfieThumb",
-    licenceFront: "licenceFrontThumb",
-    licenceBack: "licenceBackThumb",
-    cpcFront: "cpcFrontThumb",
-    cpcBack: "cpcBackThumb",
-    digiFront: "digiThumb",
-    dbsCertificate: "dbsThumb"
-  };
-
-  for (const [fileName, imgId] of Object.entries(docImages)) {
-    storage.ref(uploadsPath + fileName + ".jpg").getDownloadURL()
-      .then(url => {
-        document.getElementById(imgId).src = url;
-      })
-      .catch(err => {
-        console.log(`No ${fileName} uploaded yet`, err);
-      });
-  }
- `
+  document.getElementById("featureSection").innerHTML = `
     <h2>My Profile</h2>
     <p><strong>Name:</strong> ${session.name}</p>
     <p><strong>Email:</strong> ${session.email}</p>
@@ -429,11 +408,10 @@ function loadDriverProfile() {
     </div>
 
     <br>
-
-<button onclick="uploadNewDBS()">📄 Upload New DBS</button>
+    <button onclick="uploadNewDBS()">📄 Upload New DBS</button>
 
     <h3>Emergency Contact</h3>
-<p id="emergencyContact">${emergencyContact}</p>
+    <p id="emergencyContact">${emergencyContact}</p>
 
     <h3>Payslips</h3>
     <ul>
@@ -446,22 +424,22 @@ function loadDriverProfile() {
     <button onclick="loadEditProfile()">✏️ Edit Profile</button>
   `;
 
-  // ✅ Now fetch and show actual uploaded images:
-  const files = {
-    selfieThumb: "selfieUpload.jpg",
-    licenceFrontThumb: "licenceFront.jpg",
-    licenceBackThumb: "licenceBack.jpg",
-    cpcFrontThumb: "cpcFront.jpg",
-    cpcBackThumb: "cpcBack.jpg",
-    digiThumb: "digiFront.jpg",
-    dbsThumb: "dbsCertificate.jpg"
+  // 🔥 Fetch uploaded images from Firebase Storage
+  const uploadsPath = `uploads/${session.email}/`;
+  const fileMappings = {
+    selfieUpload: "selfieThumb",
+    licenceFront: "licenceFrontThumb",
+    licenceBack: "licenceBackThumb",
+    cpcFront: "cpcFrontThumb",
+    cpcBack: "cpcBackThumb",
+    digiFront: "digiThumb",
+    dbsCertificate: "dbsThumb"
   };
 
-  for (const [elementId, fileName] of Object.entries(files)) {
-    const ref = storage.ref(`uploads/${session.email}/${fileName}`);
-    ref.getDownloadURL()
+  for (const [fileName, imgId] of Object.entries(fileMappings)) {
+    storage.ref(uploadsPath + fileName + ".jpg").getDownloadURL()
       .then(url => {
-        document.getElementById(elementId).src = url;
+        document.getElementById(imgId).src = url;
       })
       .catch(error => {
         console.log(`❌ ${fileName} not found:`, error);
@@ -472,7 +450,7 @@ function loadDriverProfile() {
 function uploadNewDBS() {
   const fileInput = document.createElement("input");
   fileInput.type = "file";
-  fileInput.accept = "image/*,.pdf";
+  fileInput.accept = "image/*, .pdf";
 
   fileInput.onchange = async (event) => {
     const file = event.target.files[0];
@@ -482,8 +460,6 @@ function uploadNewDBS() {
     try {
       await storageRef.put(file);
       alert("✅ New DBS Certificate uploaded!");
-
-      // Refresh the image thumbnail immediately
       const url = await storageRef.getDownloadURL();
       document.getElementById("dbsThumb").src = url;
     } catch (error) {
@@ -494,7 +470,6 @@ function uploadNewDBS() {
 
   fileInput.click(); // Auto-open file picker
 }
-
 
 function loadEditProfile() {
   document.getElementById("featureSection").innerHTML = `
@@ -595,7 +570,6 @@ function submitDBSUpload() {
       status.innerHTML = "❌ Upload failed. Please try again.";
     });
 }
-
 
 // ✅ Movement Detection (GPS)
 let vehicleMoving = false;
