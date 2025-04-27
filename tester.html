@@ -9,139 +9,79 @@
   Version: 1.0.0 (Alpha)
   Signature: TH-TR-2025-0425
 -->
-  <meta charset="UTF-8">
-  <title>TrueRoute Storage Tester</title>
-  <style>
-    body {
-      background: #f4f4f4;
-      font-family: 'Raleway', sans-serif;
-      margin: 0;
-      padding: 40px;
-    }
-    .container {
-      max-width: 600px;
-      margin: auto;
-      background: #ffffff;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.1);
-    }
-    h1 {
-      text-align: center;
-      color: #342800;
-      margin-bottom: 30px;
-    }
-    input[type="text"] {
-      width: 100%;
-      padding: 12px;
-      margin-bottom: 20px;
-      font-size: 16px;
-      border: 2px solid #dac640;
-      border-radius: 6px;
-    }
-    button {
-      width: 100%;
-      background: linear-gradient(90deg, #dac640, #f6ea79);
-      border: none;
-      padding: 12px;
-      color: #342800;
-      font-weight: bold;
-      font-size: 16px;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-    button:hover {
-      background: linear-gradient(90deg, #f6ea79, #dac640);
-    }
-    .result {
-      margin-top: 30px;
-    }
-    img {
-      width: 150px;
-      border: 2px solid #dac640;
-      border-radius: 10px;
-      margin-top: 10px;
-    }
-    .footer {
-      text-align: center;
-      margin-top: 50px;
-      font-size: 14px;
-      color: #dac640;
-      font-weight: bold;
-    }
-  </style>
+<title>TrueRoute Storage Tester (Secure)</title>
 </head>
 <body>
+  <h1>📂 TrueRoute Storage Tester (Secure)</h1>
 
-<div class="container">
-  <h1>📂 TrueRoute Storage Tester</h1>
+  <input type="text" id="emailInput" placeholder="Your Email" value="paul.hill1988@outlook.com">
+  <input type="password" id="passwordInput" placeholder="Your Password">
+  <button onclick="authAndFetch()">🔐 Login & Fetch Images</button>
 
-  <input type="text" id="driverEmail" placeholder="Enter driver email (e.g. john@example.com)">
-  <button onclick="fetchImages()">🔍 Fetch Images</button>
+  <div id="status" style="margin-top:20px;"></div>
 
-  <div id="result" class="result"></div>
-</div>
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
 
-<div class="footer">
-  TRUEROUTE – Developed by Thomas Hill Travel
-</div>
-
-<!-- Firebase Scripts -->
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
-
-<script>
-  // Initialize Firebase
-  const firebaseConfig = {
-    apiKey: "AIzaSyCVJqDnJVCBgimKAZOnb9NIMWN92fbaCtQ",
-    authDomain: "trueroute-7cd95.firebaseapp.com",
-    projectId: "trueroute-7cd95",
-    storageBucket: "trueroute-7cd95.appspot.com",
-    messagingSenderId: "1076186848093",
-    appId: "1:1076186848093:web:aaeabcf3d98f4c413fe6b4"
-  };
-  firebase.initializeApp(firebaseConfig);
-  const storage = firebase.storage();
-
-  function fetchImages() {
-    const email = document.getElementById('driverEmail').value.trim();
-    if (!email) {
-      alert('Please enter a driver email!');
-      return;
-    }
-    
-    const uploadsPath = `uploads/${email}/`;
-    const files = {
-      "Selfie": "selfieUpload.jpg",
-      "Licence Front": "licenceFront.jpg",
-      "Licence Back": "licenceBack.jpg",
-      "CPC Front": "cpcFront.jpg",
-      "CPC Back": "cpcBack.jpg",
-      "Digi Card": "digiFront.jpg",
-      "DBS Certificate": "dbsCertificate.jpg"
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCVJqDnJVCBgimKAZOnb9NIMWN92fbaCtQ",
+      authDomain: "trueroute-7cd95.firebaseapp.com",
+      projectId: "trueroute-7cd95",
+      storageBucket: "trueroute-7cd95.appspot.com",
+      messagingSenderId: "1076186848093",
+      appId: "1:1076186848093:web:aaeabcf3d98f4c413fe6b4"
     };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const storage = firebase.storage();
 
-    document.getElementById('result').innerHTML = "<h3 style='text-align:center;'>Loading...</h3>";
+    async function authAndFetch() {
+      const email = document.getElementById('emailInput').value.trim();
+      const password = document.getElementById('passwordInput').value.trim();
+      const status = document.getElementById('status');
+      status.innerHTML = "🔄 Authenticating...";
 
-    const promises = Object.entries(files).map(([label, filename]) => {
-      return storage.ref(`${uploadsPath}${filename}`).getDownloadURL()
-        .then(url => {
-          return `<div style="margin-bottom: 30px;">
-                    <strong>${label}:</strong><br>
-                    <img src="${url}" alt="${label}">
-                  </div>`;
-        })
-        .catch(error => {
-          return `<div style="margin-bottom: 20px;"><strong>${label}:</strong> ❌ Not Found</div>`;
-        });
-    });
+      try {
+        await auth.signInWithEmailAndPassword(email, password);
+        status.innerHTML = "✅ Authenticated! Fetching images...";
+        fetchImages(email);
+      } catch (error) {
+        console.error(error);
+        status.innerHTML = "❌ Authentication failed: " + error.message;
+      }
+    }
 
-    Promise.all(promises).then(results => {
-      document.getElementById('result').innerHTML = results.join('');
-    });
-  }
-</script>
+    async function fetchImages(driverEmail) {
+      const status = document.getElementById('status');
+      const folderPath = `uploads/${driverEmail}/`;
 
+      const files = {
+        selfieUpload: "Selfie",
+        licenceFront: "Licence Front",
+        licenceBack: "Licence Back",
+        cpcFront: "CPC Front",
+        cpcBack: "CPC Back",
+        digiFront: "Digi Card",
+        dbsCertificate: "DBS Certificate"
+      };
+
+      status.innerHTML = "";
+
+      for (const [fileName, label] of Object.entries(files)) {
+        const fileRef = storage.ref(folderPath + fileName + ".jpg");
+        try {
+          const url = await fileRef.getDownloadURL();
+          status.innerHTML += `<p>${label}: <img src="${url}" width="120" style="border-radius:10px;"></p>`;
+        } catch (error) {
+          console.log(`❌ Missing ${fileName}`, error);
+          status.innerHTML += `<p>${label}: ❌ Not Found</p>`;
+        }
+      }
+    }
+  </script>
 </body>
 </html>
 
