@@ -37,27 +37,43 @@
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const storage = firebase.storage();
-
+  
+    let loadingInterval; // 👈 We create this globally to control loading dots
+  
     async function authAndFetch() {
       const email = document.getElementById('emailInput').value.trim();
       const password = document.getElementById('passwordInput').value.trim();
       const status = document.getElementById('status');
-      status.innerHTML = "🔄 Authenticating...";
-
+      status.innerHTML = `<span id="loadingDots">🔄 Authenticating</span>`;
+  
+      let dots = 0;
+      loadingInterval = setInterval(() => {
+        dots = (dots + 1) % 4;
+        document.getElementById('loadingDots').innerText = "🔄 Authenticating" + ".".repeat(dots);
+      }, 500);
+  
       try {
         await auth.signInWithEmailAndPassword(email, password);
-        status.innerHTML = "✅ Authenticated! Fetching images...";
+        clearInterval(loadingInterval);
+        status.innerHTML = `<span id="loadingDots">✅ Authenticated! Fetching images</span>`;
+        dots = 0;
+        loadingInterval = setInterval(() => {
+          dots = (dots + 1) % 4;
+          document.getElementById('loadingDots').innerText = "✅ Fetching images" + ".".repeat(dots);
+        }, 500);
+  
         fetchImages(email);
       } catch (error) {
         console.error(error);
+        clearInterval(loadingInterval);
         status.innerHTML = "❌ Authentication failed: " + error.message;
       }
     }
-
+  
     async function fetchImages(driverEmail) {
       const status = document.getElementById('status');
       const folderPath = `uploads/${driverEmail}/`;
-
+  
       const files = {
         selfieUpload: "Selfie",
         licenceFront: "Licence Front",
@@ -67,21 +83,25 @@
         digiFront: "Digi Card",
         dbsCertificate: "DBS Certificate"
       };
-
-      status.innerHTML = "";
-
+  
+      let output = "";
+  
       for (const [fileName, label] of Object.entries(files)) {
         const fileRef = storage.ref(folderPath + fileName + ".jpg");
         try {
           const url = await fileRef.getDownloadURL();
-          status.innerHTML += `<p>${label}: <img src="${url}" width="120" style="border-radius:10px;"></p>`;
+          output += `<p>${label}: <img src="${url}" width="120" style="border-radius:10px;"></p>`;
         } catch (error) {
           console.log(`❌ Missing ${fileName}`, error);
-          status.innerHTML += `<p>${label}: ❌ Not Found</p>`;
+          output += `<p>${label}: ❌ Not Found</p>`;
         }
       }
+  
+      clearInterval(loadingInterval);
+      status.innerHTML = output;
     }
   </script>
+  
 </body>
 </html>
 
