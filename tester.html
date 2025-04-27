@@ -1,68 +1,147 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- 
+  TrueRoute Driver App (TESTER)
+  Developed by Thomas Hill Travel
+  All rights reserved.
+  License: TrueRoute proprietary license
+  Version: 1.0.0 (Alpha)
+  Signature: TH-TR-2025-0425
+-->
   <meta charset="UTF-8">
   <title>TrueRoute Storage Tester</title>
-</head>
-<body style="font-family: Arial, sans-serif; padding: 40px; background: #f4f4f4;">
-  <h1>📂 TrueRoute Storage Test</h1>
-
-  <input type="text" id="driverEmail" placeholder="Enter driver email" style="width: 300px; padding: 10px;">
-  <button onclick="fetchImages()" style="padding: 10px;">🔍 Fetch Images</button>
-
-  <div id="result" style="margin-top: 40px;"></div>
-
-  <!-- Firebase scripts -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
-
-  <script>
-    // Initialize Firebase (use YOUR config)
-    const firebaseConfig = {
-      apiKey: "AIzaSyCVJqDnJVCBgimKAZOnb9NIMWN92fbaCtQ",
-      authDomain: "trueroute-7cd95.firebaseapp.com",
-      projectId: "trueroute-7cd95",
-      storageBucket: "trueroute-7cd95.appspot.com",
-      messagingSenderId: "1076186848093",
-      appId: "1:1076186848093:web:aaeabcf3d98f4c413fe6b4"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const storage = firebase.storage();
-
-    function fetchImages() {
-      const email = document.getElementById('driverEmail').value.trim();
-      if (!email) {
-        alert('Please enter an email!');
-        return;
-      }
-      
-      const uploadsPath = `uploads/${email}/`;
-      const files = {
-        "Selfie": "selfieUpload.jpg",
-        "Licence Front": "licenceFront.jpg",
-        "Licence Back": "licenceBack.jpg",
-        "CPC Front": "cpcFront.jpg",
-        "CPC Back": "cpcBack.jpg",
-        "Digi Card": "digiFront.jpg",
-        "DBS Certificate": "dbsCertificate.jpg"
-      };
-
-      document.getElementById('result').innerHTML = "<h2>Loading...</h2>";
-
-      const promises = Object.entries(files).map(([label, filename]) => {
-        return storage.ref(`${uploadsPath}${filename}`).getDownloadURL()
-          .then(url => {
-            return `<div style="margin-bottom: 20px;"><strong>${label}:</strong><br><img src="${url}" style="width:150px; border:1px solid #ccc; border-radius:8px;"></div>`;
-          })
-          .catch(error => {
-            return `<div style="margin-bottom: 20px;"><strong>${label}:</strong> ❌ Not Found</div>`;
-          });
-      });
-
-      Promise.all(promises).then(results => {
-        document.getElementById('result').innerHTML = results.join('');
-      });
+  <style>
+    body {
+      background: #f4f4f4;
+      font-family: 'Raleway', sans-serif;
+      margin: 0;
+      padding: 40px;
     }
-  </script>
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+    h1 {
+      text-align: center;
+      color: #342800;
+      margin-bottom: 30px;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 20px;
+      font-size: 16px;
+      border: 2px solid #dac640;
+      border-radius: 6px;
+    }
+    button {
+      width: 100%;
+      background: linear-gradient(90deg, #dac640, #f6ea79);
+      border: none;
+      padding: 12px;
+      color: #342800;
+      font-weight: bold;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: linear-gradient(90deg, #f6ea79, #dac640);
+    }
+    .result {
+      margin-top: 30px;
+    }
+    img {
+      width: 150px;
+      border: 2px solid #dac640;
+      border-radius: 10px;
+      margin-top: 10px;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 50px;
+      font-size: 14px;
+      color: #dac640;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>📂 TrueRoute Storage Tester</h1>
+
+  <input type="text" id="driverEmail" placeholder="Enter driver email (e.g. john@example.com)">
+  <button onclick="fetchImages()">🔍 Fetch Images</button>
+
+  <div id="result" class="result"></div>
+</div>
+
+<div class="footer">
+  TRUEROUTE – Developed by Thomas Hill Travel
+</div>
+
+<!-- Firebase Scripts -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
+
+<script>
+  // Initialize Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyCVJqDnJVCBgimKAZOnb9NIMWN92fbaCtQ",
+    authDomain: "trueroute-7cd95.firebaseapp.com",
+    projectId: "trueroute-7cd95",
+    storageBucket: "trueroute-7cd95.appspot.com",
+    messagingSenderId: "1076186848093",
+    appId: "1:1076186848093:web:aaeabcf3d98f4c413fe6b4"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const storage = firebase.storage();
+
+  function fetchImages() {
+    const email = document.getElementById('driverEmail').value.trim();
+    if (!email) {
+      alert('Please enter a driver email!');
+      return;
+    }
+    
+    const uploadsPath = `uploads/${email}/`;
+    const files = {
+      "Selfie": "selfieUpload.jpg",
+      "Licence Front": "licenceFront.jpg",
+      "Licence Back": "licenceBack.jpg",
+      "CPC Front": "cpcFront.jpg",
+      "CPC Back": "cpcBack.jpg",
+      "Digi Card": "digiFront.jpg",
+      "DBS Certificate": "dbsCertificate.jpg"
+    };
+
+    document.getElementById('result').innerHTML = "<h3 style='text-align:center;'>Loading...</h3>";
+
+    const promises = Object.entries(files).map(([label, filename]) => {
+      return storage.ref(`${uploadsPath}${filename}`).getDownloadURL()
+        .then(url => {
+          return `<div style="margin-bottom: 30px;">
+                    <strong>${label}:</strong><br>
+                    <img src="${url}" alt="${label}">
+                  </div>`;
+        })
+        .catch(error => {
+          return `<div style="margin-bottom: 20px;"><strong>${label}:</strong> ❌ Not Found</div>`;
+        });
+    });
+
+    Promise.all(promises).then(results => {
+      document.getElementById('result').innerHTML = results.join('');
+    });
+  }
+</script>
+
 </body>
 </html>
+
