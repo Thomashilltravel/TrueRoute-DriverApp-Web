@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>TrueRoute Storage Tester</title>
+</head>
+<body style="font-family: Arial, sans-serif; padding: 40px; background: #f4f4f4;">
+  <h1>📂 TrueRoute Storage Test</h1>
+
+  <input type="text" id="driverEmail" placeholder="Enter driver email" style="width: 300px; padding: 10px;">
+  <button onclick="fetchImages()" style="padding: 10px;">🔍 Fetch Images</button>
+
+  <div id="result" style="margin-top: 40px;"></div>
+
+  <!-- Firebase scripts -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
+
+  <script>
+    // Initialize Firebase (use YOUR config)
+    const firebaseConfig = {
+      apiKey: "AIzaSyCVJqDnJVCBgimKAZOnb9NIMWN92fbaCtQ",
+      authDomain: "trueroute-7cd95.firebaseapp.com",
+      projectId: "trueroute-7cd95",
+      storageBucket: "trueroute-7cd95.appspot.com",
+      messagingSenderId: "1076186848093",
+      appId: "1:1076186848093:web:aaeabcf3d98f4c413fe6b4"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const storage = firebase.storage();
+
+    function fetchImages() {
+      const email = document.getElementById('driverEmail').value.trim();
+      if (!email) {
+        alert('Please enter an email!');
+        return;
+      }
+      
+      const uploadsPath = `uploads/${email}/`;
+      const files = {
+        "Selfie": "selfieUpload.jpg",
+        "Licence Front": "licenceFront.jpg",
+        "Licence Back": "licenceBack.jpg",
+        "CPC Front": "cpcFront.jpg",
+        "CPC Back": "cpcBack.jpg",
+        "Digi Card": "digiFront.jpg",
+        "DBS Certificate": "dbsCertificate.jpg"
+      };
+
+      document.getElementById('result').innerHTML = "<h2>Loading...</h2>";
+
+      const promises = Object.entries(files).map(([label, filename]) => {
+        return storage.ref(`${uploadsPath}${filename}`).getDownloadURL()
+          .then(url => {
+            return `<div style="margin-bottom: 20px;"><strong>${label}:</strong><br><img src="${url}" style="width:150px; border:1px solid #ccc; border-radius:8px;"></div>`;
+          })
+          .catch(error => {
+            return `<div style="margin-bottom: 20px;"><strong>${label}:</strong> ❌ Not Found</div>`;
+          });
+      });
+
+      Promise.all(promises).then(results => {
+        document.getElementById('result').innerHTML = results.join('');
+      });
+    }
+  </script>
+</body>
+</html>
